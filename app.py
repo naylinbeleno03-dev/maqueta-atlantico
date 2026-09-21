@@ -27,21 +27,21 @@ html_code = """
 
     /* Tarjeta Principal */
     .card {
-      background: rgba(30, 41, 59, 0.7);
+      background: rgba(30, 41, 59, 0.75);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 28px;
-      padding: 30px 25px;
+      padding: 30px 20px;
       max-width: 540px;
       width: 100%;
       text-align: center;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
       position: relative;
     }
 
     h1 {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 800;
       background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
       -webkit-background-clip: text;
@@ -53,15 +53,15 @@ html_code = """
     /* Contenedor de la Ruleta */
     .ruleta-container {
       position: relative;
-      width: 290px;
-      height: 290px;
+      width: 310px;
+      height: 310px;
       margin: 10px auto 25px;
       display: flex;
       justify-content: center;
       align-items: center;
     }
 
-    /* Marco de Luces Tira LED */
+    /* Marco Exterior Dorado */
     .ruleta-outer-ring {
       position: absolute;
       width: 100%;
@@ -89,21 +89,10 @@ html_code = """
       filter: drop-shadow(0 6px 8px rgba(0,0,0,0.6));
     }
 
-    /* Rueda Giratoria Canvas/CSS */
-    .ruleta-wheel {
-      width: 260px;
-      height: 260px;
+    /* Ruleta Canvas con Nombres */
+    #canvasRuleta {
       border-radius: 50%;
-      border: 4px solid #ffffff;
-      background: conic-gradient(
-        #ef4444 0deg 51.4deg,
-        #3b82f6 51.4deg 102.8deg,
-        #10b981 102.8deg 154.2deg,
-        #f59e0b 154.2deg 205.6deg,
-        #8b5cf6 205.6deg 257deg,
-        #ec4899 257deg 308.4deg,
-        #06b6d4 308.4deg 360deg
-      );
+      border: 5px solid #ffffff;
       box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
       transition: transform 4s cubic-bezier(0.15, 0.85, 0.15, 1);
     }
@@ -259,7 +248,7 @@ html_code = """
     <div class="ruleta-container">
       <div class="ruleta-outer-ring">
         <div class="flecha"></div>
-        <div id="wheel" class="ruleta-wheel"></div>
+        <canvas id="canvasRuleta" width="280" height="280"></canvas>
         <div class="ruleta-centro">⭐</div>
       </div>
     </div>
@@ -299,104 +288,168 @@ html_code = """
   </div>
 
   <script>
-    const preguntas = [
+    // Las 7 preguntas exactas ajustadas sin Soledad
+    const sectores = [
       {
-        pregunta: "1. ¿Cuál es la Población Total (N) representada en la maqueta?",
-        A: "1.564.805 habitantes", B: "1.273.184 habitantes", C: "2.000.000 habitantes", D: "980.500 habitantes",
+        titulo: "2do MÁS POBLADO",
+        color: "#dc2626",
+        pregunta: "1. ¿Cuál es el segundo municipio con más población?",
+        A: "Malambo", B: "Galapa", C: "Puerto Colombia", D: "Barranquilla",
         correcta: "A"
       },
       {
-        pregunta: "2. ¿Qué municipio representa la MODA (Mayor población)?",
-        A: "Malambo", B: "Puerto Colombia", C: "Barranquilla", D: "Galapa",
-        correcta: "C"
-      },
-      {
-        pregunta: "3. ¿Cuál es el segundo municipio con mayor número de habitantes?",
-        A: "Puerto Colombia", B: "Malambo", C: "Galapa", D: "Soledad",
+        titulo: "MAYOR POBLACIÓN",
+        color: "#2563eb",
+        pregunta: "2. ¿Qué municipio concentra la mayor población?",
+        A: "Galapa", B: "Barranquilla", C: "Malambo", D: "Puerto Colombia",
         correcta: "B"
       },
       {
-        pregunta: "4. ¿Cuál es la escala utilizada en el gráfico de la maqueta?",
-        A: "1 cm = 1.000 habitantes", B: "1 cm = 100.000 habitantes", C: "1 cm = 10.000 habitantes", D: "1 cm = 50.000 habitantes",
-        correcta: "C"
-      },
-      {
-        pregunta: "5. ¿Qué municipio posee la menor población representada?",
-        A: "Puerto Colombia (53.091 hab)", B: "Galapa (95.127 hab)", C: "Malambo (159.386 hab)", D: "Barranquilla",
+        titulo: "ORDENAR POBLACIÓN",
+        color: "#059669",
+        pregunta: "3. Ordena los municipios de mayor a menor población:",
+        A: "Barranquilla > Malambo > Galapa > Puerto Colombia",
+        B: "Barranquilla > Galapa > Malambo > Puerto Colombia",
+        C: "Malambo > Barranquilla > Galapa > Puerto Colombia",
+        D: "Puerto Colombia > Galapa > Malambo > Barranquilla",
         correcta: "A"
       },
       {
-        pregunta: "6. ¿Cuál es la diferencia de población entre Barranquilla y Puerto Colombia?",
-        A: "1.220.093 habitantes", B: "500.000 habitantes", C: "100.000 habitantes", D: "850.000 habitantes",
+        titulo: "POBLACIÓN TOTAL",
+        color: "#d97706",
+        pregunta: "4. ¿Cuál es la población total de la zona metropolitana representada?",
+        A: "1.273.184 habitantes", B: "1.580.788 habitantes", C: "1.850.000 habitantes", D: "950.000 habitantes",
+        correcta: "B"
+      },
+      {
+        titulo: "% BARRANQUILLA",
+        color: "#7c3aed",
+        pregunta: "5. ¿Aproximadamente qué porcentaje de la población total representa Barranquilla?",
+        A: "50%", B: "80%", C: "65%", D: "95%",
+        correcta: "B"
+      },
+      {
+        titulo: "RANGO POBLACIÓN",
+        color: "#db2777",
+        pregunta: "6. ¿Cuál es el rango de la población (Diferencia entre el mayor y menor)?",
+        A: "1.220.093 habitantes", B: "1.100.000 habitantes", C: "950.000 habitantes", D: "1.273.184 habitantes",
         correcta: "A"
       },
       {
-        pregunta: "7. ¿Cuántos municipios conforman formalmente la Zona Metropolitana?",
-        A: "3 municipios", B: "4 municipios", C: "5 municipios", D: "6 municipios",
-        correcta: "C"
+        titulo: "ESCALA MAQUETA",
+        color: "#0891b2",
+        pregunta: "7. ¿Qué significa la escala 1 cm = 50.000 habitantes?",
+        A: "Que la maqueta mide 50 cm de largo",
+        B: "Que 1 cm de barra representa 50.000 personas reales",
+        C: "Que hay 50.000 habitantes en todo el Atlántico",
+        D: "Que cada municipio mide 1 cm",
+        correcta: "B"
       }
     ];
 
-    let preguntaActual = {};
+    const canvas = document.getElementById('canvasRuleta');
+    const ctx = canvas.getContext('2d');
+    const numSectores = sectores.length;
+    const anguloArc = (2 * Math.PI) / numSectores;
+
+    // Dibujar la Ruleta con Textos
+    function dibujarRuleta() {
+      const centroX = canvas.width / 2;
+      const centroY = canvas.height / 2;
+      const radio = canvas.width / 2;
+
+      for (let i = 0; i < numSectores; i++) {
+        const anguloInicio = i * anguloArc;
+        const anguloFin = (i + 1) * anguloArc;
+
+        // Sector de color
+        ctx.beginPath();
+        ctx.fillStyle = sectores[i].color;
+        ctx.moveTo(centroX, centroY);
+        ctx.arc(centroX, centroY, radio, anguloInicio, anguloFin);
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "#ffffff";
+        ctx.stroke();
+
+        // Texto curvado/rotado en cada sector
+        ctx.save();
+        ctx.translate(centroX, centroY);
+        ctx.rotate(anguloInicio + anguloArc / 2);
+        ctx.textAlign = "right";
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 10px Poppins, sans-serif";
+        ctx.fillText(sectores[i].titulo, radio - 12, 4);
+        ctx.restore();
+      }
+    }
+
+    dibujarRuleta();
+
+    let sectorSeleccionado = {};
     let anguloActual = 0;
 
     // Sintetizador Web Audio para Sonidos HD
     function reproducirSonido(tipo) {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const ctxAudio = new (window.AudioContext || window.webkitAudioContext)();
       if (tipo === 'acierto') {
         const notas = [523.25, 659.25, 783.99, 1046.50];
         notas.forEach((freq, idx) => {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
+          const osc = ctxAudio.createOscillator();
+          const gain = ctxAudio.createGain();
           osc.frequency.value = freq;
-          gain.gain.setValueAtTime(0.2, ctx.currentTime + idx * 0.08);
-          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.08 + 0.3);
+          gain.gain.setValueAtTime(0.2, ctxAudio.currentTime + idx * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctxAudio.currentTime + idx * 0.08 + 0.3);
           osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(ctx.currentTime + idx * 0.08);
-          osc.stop(ctx.currentTime + idx * 0.08 + 0.3);
+          gain.connect(ctxAudio.destination);
+          osc.start(ctxAudio.currentTime + idx * 0.08);
+          osc.stop(ctxAudio.currentTime + idx * 0.08 + 0.3);
         });
       } else {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
+        const osc = ctxAudio.createOscillator();
+        const gain = ctxAudio.createGain();
         osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(140, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.35);
-        gain.gain.setValueAtTime(0.3, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+        osc.frequency.setValueAtTime(140, ctxAudio.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(40, ctxAudio.currentTime + 0.35);
+        gain.gain.setValueAtTime(0.3, ctxAudio.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctxAudio.currentTime + 0.35);
         osc.connect(gain);
-        gain.connect(ctx.destination);
+        gain.connect(ctxAudio.destination);
         osc.start();
-        osc.stop(ctx.currentTime + 0.35);
+        osc.stop(ctxAudio.currentTime + 0.35);
       }
     }
 
     function girarRuleta() {
       document.getElementById('juego').classList.add('oculto');
-      const wheel = document.getElementById('wheel');
       const girosExtra = Math.floor(Math.random() * 5) + 6;
-      const anguloRandom = Math.floor(Math.random() * 360);
-      anguloActual += (girosExtra * 360) + anguloRandom;
+      const indiceAleatorio = Math.floor(Math.random() * numSectores);
       
-      wheel.style.transform = `rotate(${anguloActual}deg)`;
+      sectorSeleccionado = sectores[indiceAleatorio];
+
+      // Cálculo del ángulo exacto para detenerse bajo la flecha superior (270 deg)
+      const anguloSectorDeg = 360 / numSectores;
+      const anguloMeta = 270 - (indiceAleatorio * anguloSectorDeg) - (anguloSectorDeg / 2);
+      
+      anguloActual += (girosExtra * 360) + (anguloMeta - (anguloActual % 360));
+      canvas.style.transform = `rotate(${anguloActual}deg)`;
 
       setTimeout(() => {
-        preguntaActual = preguntas[Math.floor(Math.random() * preguntas.length)];
         mostrarPregunta();
       }, 4000);
     }
 
     function mostrarPregunta() {
       document.getElementById('juego').classList.remove('oculto');
-      document.getElementById('pregunta').textContent = preguntaActual.pregunta;
-      document.getElementById('opcionA').textContent = `A) ${preguntaActual.A}`;
-      document.getElementById('opcionB').textContent = `B) ${preguntaActual.B}`;
-      document.getElementById('opcionC').textContent = `C) ${preguntaActual.C}`;
-      document.getElementById('opcionD').textContent = `D) ${preguntaActual.D}`;
+      document.getElementById('pregunta').textContent = sectorSeleccionado.pregunta;
+      document.getElementById('opcionA').textContent = `A) ${sectorSeleccionado.A}`;
+      document.getElementById('opcionB').textContent = `B) ${sectorSeleccionado.B}`;
+      document.getElementById('opcionC').textContent = `C) ${sectorSeleccionado.C}`;
+      document.getElementById('opcionD').textContent = `D) ${sectorSeleccionado.D}`;
     }
 
     function verificarRespuesta(opcion) {
-      if (opcion === preguntaActual.correcta) {
+      if (opcion === sectorSeleccionado.correcta) {
         reproducirSonido('acierto');
         confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
         document.getElementById('overlayAcierto').style.display = 'flex';
@@ -417,4 +470,4 @@ html_code = """
 </html>
 """
 
-st.components.v1.html(html_code, height=760, scrolling=True)
+st.components.v1.html(html_code, height=780, scrolling=True)
