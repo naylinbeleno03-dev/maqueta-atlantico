@@ -1,156 +1,452 @@
-import streamlit as st
-import pandas as pd
-import random
-import base64
-
-# Configuración de la página
-st.set_page_config(
-    page_title="Estadística - Zona Metropolitana del Atlántico",
-    page_icon="🎡",
-    layout="centered"
-)
-
-# Cargar imagen de fondo si existe
-def cargar_fondo(ruta_imagen):
-    try:
-        with open(ruta_imagen, "rb") as image_file:
-            encoded_string = base64.b64encode(image_file.read()).decode()
-        css = f"""
-        <style>
-        .stApp {{
-            background-image: url("data:image/png;base64,{encoded_string}");
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }}
-        .stApp::before {{
-            content: "";
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(3, 4, 94, 0.55);
-            z-index: -1;
-        }}
-        </style>
-        """
-        st.markdown(css, unsafe_allow_html=True)
-    except FileNotFoundError:
-        pass
-
-cargar_fondo("fondo.png")
-
-# Título Principal
-st.markdown("<h1 style='text-align: center; color: #fcbf49;'>🎡 Juego de Estadística</h1>", unsafe_allow_html=True)
-st.markdown("<h3 style='text-align: center; color: #ffffff;'>Área Metropolitana del Atlántico</h3>", unsafe_allow_html=True)
-st.write("---")
-
-# Base de Datos de Preguntas de Estadística
-preguntas = [
-    {
-        "num": 1,
-        "pregunta": "1. ¿Cuál es el segundo municipio con más población en tu maqueta?",
-        "opciones": ["Galapa", "Malambo", "Puerto Colombia", "Barranquilla"],
-        "correcta": "Malambo",
-        "pista": "Es la segunda frecuencia absoluta (fi) más alta con 153.223 habitantes."
-    },
-    {
-        "num": 2,
-        "pregunta": "2. ¿Qué municipio concentra la mayor población (Moda de la muestra)?",
-        "opciones": ["Malambo", "Galapa", "Barranquilla", "Puerto Colombia"],
-        "correcta": "Barranquilla",
-        "pista": "Es el valor con mayor frecuencia (fi = 1.275.854 habitantes)."
-    },
-    {
-        "num": 3,
-        "pregunta": "3. ¿Qué puente conecta la zona metropolitana con el departamento del Magdalena?",
-        "opciones": ["Muelle de Puerto Colombia", "Puente Alberto Pumarejo", "Gran Malecón", "Ventanal al Mundo"],
-        "correcta": "Puente Alberto Pumarejo",
-        "pista": "Es el puente atirantado representativo sobre el Río Magdalena."
-    },
-    {
-        "num": 4,
-        "pregunta": "4. ¿Cuál es la población total (N) entre los 4 municipios representados?",
-        "opciones": ["2.100.000 hab", "1.275.854 hab", "1.564.805 hab", "980.500 hab"],
-        "correcta": "1.564.805 hab",
-        "pista": "Suma exacta de las 4 frecuencias: 1.275.854 + 153.223 + 70.042 + 65.686."
-    },
-    {
-        "num": 5,
-        "pregunta": "5. ¿Qué ecosistema clave de agua dulce y salada se encuentra en la zona?",
-        "opciones": ["Parque Tayrona", "Ciénaga de Mallorquín y Bocas de Ceniza", "Laguna de Guatavita", "Caño Cristales"],
-        "correcta": "Ciénaga de Mallorquín y Bocas de Ceniza",
-        "pista": "Desembocadura directa del Río Magdalena en el Mar Caribe."
-    },
-    {
-        "num": 6,
-        "pregunta": "6. ¿Qué municipio destaca por su muelle histórico sobre el Mar Caribe?",
-        "opciones": ["Galapa", "Malambo", "Puerto Colombia", "Barranquilla"],
-        "correcta": "Puerto Colombia",
-        "pista": "Municipio costero representado con 65.686 habitantes (4,2%)."
-    },
-    {
-        "num": 7,
-        "pregunta": "7. ¿Qué significa la escala 1 cm = 50.000 habitantes?",
-        "opciones": [
-            "1 cm equivale a 50.000 metros",
-            "Cada cm de la barra representa 50.000 personas",
-            "La maqueta mide 50 cm",
-            "Hay 50.000 municipios"
-        ],
-        "correcta": "Cada cm de la barra representa 50.000 personas",
-        "pista": "Proporción escalar para representar cuantitativamente la población."
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Juego Interactivo - Zona Metropolitana del Atlántico</title>
+  <style>
+    /* Estilos Base y Fondo */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
-]
 
-# Inicializar Estado de Sesión
-if "pregunta_actual" not in st.session_state:
-    st.session_state.pregunta_actual = None
-if "mostrar_pista" not in st.session_state:
-    st.session_state.mostrar_pista = False
-
-col1, col2 = st.columns(2)
-
-with col1:
-    if st.button("🎡 ¡GIRAR RULETA!", use_container_width=True, type="primary"):
-        st.session_state.pregunta_actual = random.choice(preguntas)
-        st.session_state.mostrar_pista = False
-
-with col2:
-    ver_tabla = st.checkbox("📊 Ver Tabla de Frecuencias")
-
-# Mostrar Tabla de Frecuencias
-if ver_tabla:
-    st.subheader("📊 Distribución Frecuencial de Población")
-    data = {
-        "Municipio": ["Barranquilla", "Malambo", "Galapa", "Puerto Colombia"],
-        "Población (fi)": [1275854, 153223, 70042, 65686],
-        "Porcentaje (%)": ["81.5%", "9.8%", "4.5%", "4.2%"]
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      background: url('fondo.png?v=2') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      color: #f8fafc;
     }
-    df = pd.DataFrame(data)
-    st.dataframe(df, use_container_width=True)
+
+    /* Tarjeta Principal Oscura */
+    .card {
+      background: rgba(15, 23, 42, 0.88); /* Fondo oscuro con transparencia para resaltar */
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 24px;
+      padding: 30px;
+      max-width: 550px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    h1 {
+      color: #38bdf8; /* Azul Neón Clarito */
+      font-size: 24px;
+      margin-bottom: 20px;
+      text-shadow: 0 2px 10px rgba(56, 189, 248, 0.3);
+    }
+
+    /* Contenedor de la Ruleta */
+    .ruleta-container {
+      margin: 20px 0;
+    }
+
+    .ruleta {
+      width: 110px;
+      height: 110px;
+      background: #1e293b;
+      border: 4px solid #f59e0b;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 42px;
+      font-weight: bold;
+      color: #f59e0b;
+      margin: 0 auto 15px;
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+      transition: transform 0.1s linear;
+    }
+
+    /* Botones Estilo Oscuro */
+    button {
+      background-color: #0284c7;
+      color: #ffffff;
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+    }
+
+    button:hover {
+      background-color: #0369a1;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(2, 132, 199, 0.5);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .btn-ayuda {
+      background-color: #d97706;
+      color: #ffffff;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+    }
+
+    .btn-ayuda:hover {
+      background-color: #b45309;
+      box-shadow: 0 6px 16px rgba(217, 119, 6, 0.5);
+    }
+
+    .btn-tabla {
+      background-color: #059669;
+      color: #ffffff;
+      margin-top: 15px;
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+    }
+
+    .btn-tabla:hover {
+      background-color: #047857;
+      box-shadow: 0 6px 16px rgba(5, 150, 105, 0.5);
+    }
+
+    /* Pista y Cuadro de Preguntas */
+    h2 {
+      color: #f1f5f9;
+      font-size: 19px;
+      margin: 15px 0;
+      line-height: 1.4;
+    }
+
+    .pista {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid #f59e0b;
+      color: #fef08a;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      margin-bottom: 15px;
+      text-align: left;
+    }
+
+    /* Opciones de Respuesta */
+    .opciones {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 15px 0;
+    }
+
+    .opciones button {
+      background-color: #1e293b;
+      color: #e2e8f0;
+      text-align: left;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: none;
+    }
+
+    .opciones button:hover {
+      background-color: #334155;
+      color: #ffffff;
+      border-color: #38bdf8;
+    }
+
+    /* Resultado */
+    .resultado {
+      font-size: 22px;
+      font-weight: bold;
+      margin: 15px 0;
+    }
+
+    .resultado.correcto {
+      color: #4ade80;
+      text-shadow: 0 0 10px rgba(74, 222, 128, 0.4);
+    }
+
+    .resultado.incorrecto {
+      color: #f87171;
+      text-shadow: 0 0 10px rgba(248, 113, 113, 0.4);
+    }
+
+    /* Modal / Ventana Emergente de Estadísticas */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 25px;
+      max-width: 500px;
+      width: 100%;
+      color: #f8fafc;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+      position: relative;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 24px;
+      color: #94a3b8;
+      cursor: pointer;
+    }
+
+    .close-btn:hover {
+      color: #ffffff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+    }
+
+    th, td {
+      border: 1px solid #334155;
+      padding: 10px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    th {
+      background-color: #1e293b;
+      color: #38bdf8;
+    }
+
+    td {
+      background-color: rgba(30, 41, 59, 0.5);
+    }
+
+    /* Utilidades */
+    .oculto {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>🎡 Área Metropolitana del Atlántico</h1>
     
-    st.info("""
-    * **Total (N):** 1.564.805 habitantes
-    * **Moda:** Barranquilla (81.5%)
-    * **Rango Poblacional:** 1.210.168 habitantes
-    * **Escala Maqueta:** 1 cm = 50.000 habitantes
-    """)
+    <!-- Sección de Ruleta -->
+    <div class="ruleta-container">
+      <div id="ruleta" class="ruleta">❓</div>
+      <button id="btnGirar" onclick="girarRuleta()">¡Girar Ruleta!</button>
+    </div>
 
-# Mostrar Pregunta Seleccionada
-if st.session_state.pregunta_actual:
-    q = st.session_state.pregunta_actual
-    st.subheader(q["pregunta"])
+    <!-- Juego / Preguntas -->
+    <div id="juego" class="oculto">
+      <h2 id="pregunta">Pregunta...</h2>
 
-    if st.button("💡 Pedir Ayuda / Fórmula"):
-        st.session_state.mostrar_pista = True
+      <button class="btn-ayuda" onclick="mostrarPista()">💡 Ver Pista</button>
+      <div id="pista" class="pista oculto"></div>
 
-    if st.session_state.mostrar_pista:
-        st.warning(f"**Pista:** {q['pista']}")
+      <div class="opciones">
+        <button onclick="verificarRespuesta('A')" id="opcionA">A) ...</button>
+        <button onclick="verificarRespuesta('B')" id="opcionB">B) ...</button>
+        <button onclick="verificarRespuesta('C')" id="opcionC">C) ...</button>
+        <button onclick="verificarRespuesta('D')" id="opcionD">D) ...</button>
+      </div>
 
-    respuesta = st.radio("Selecciona tu respuesta:", q["opciones"], key=f"q_{q['num']}")
+      <div id="resultado" class="resultado"></div>
+      <button id="btnSiguiente" class="btn-siguiente oculto" onclick="siguientePregunta()">Siguiente Pregunta ➡️</button>
+    </div>
 
-    if st.button("Verificar Respuesta"):
-        if respuesta == q["correcta"]:
-            st.success("😊 ¡Correcto! Excelente análisis estadístico.")
-            st.balloons()
-        else:
-            st.error(f"😢 ¡Incorrecto! Revisa la tabla de frecuencias e inténtalo de nuevo.")
+    <button class="btn-tabla" onclick="abrirModal()">📊 Ver Tabla de Frecuencias</button>
+  </div>
+
+  <!-- Modal Tabla Estadistica -->
+  <div id="modalEstadisticas" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="cerrarModal()">&times;</span>
+      <h2 style="color: #38bdf8; text-align: center;">Tabla de Frecuencia Poblacional</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Municipio</th>
+            <th>Población (f<sub>i</sub>)</th>
+            <th>Porcentaje (%)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Barranquilla</td>
+            <td>1.275.854</td>
+            <td>81.5%</td>
+          </tr>
+          <tr>
+            <td>Malambo</td>
+            <td>153.223</td>
+            <td>9.8%</td>
+          </tr>
+          <tr>
+            <td>Galapa</td>
+            <td>70.042</td>
+            <td>4.5%</td>
+          </tr>
+          <tr>
+            <td>Puerto Colombia</td>
+            <td>65.686</td>
+            <td>4.2%</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr style="font-weight: bold; background-color: #1e293b;">
+            <td>Total (N)</td>
+            <td>1.564.805</td>
+            <td>100.0%</td>
+          </tr>
+        </tfoot>
+      </table>
+      <p style="font-size: 13px; color: #94a3b8; text-align: left;">
+        • <strong>Moda:</strong> Barranquilla (mayor población).<br>
+        • <strong>Rango:</strong> 1.210.168 habitantes (1.275.854 - 65.686).<br>
+        • <strong>Escala:</strong> 1 cm = 50.000 habitantes.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const preguntas = [
+      {
+        num: 1,
+        pregunta: "¿Cuál es el segundo municipio con mayor población de esta muestra?",
+        A: "Galapa", B: "Malambo", C: "Puerto Colombia", D: "Barranquilla",
+        correcta: "B",
+        pista: "Observa la altura de las barras: busca la que le sigue en altura a la más grande."
+      },
+      {
+        num: 2,
+        pregunta: "¿Qué municipio concentra la Moda (mayor población)?",
+        A: "Malambo", B: "Galapa", C: "Barranquilla", D: "Puerto Colombia",
+        correcta: "C",
+        pista: "Es el núcleo principal de la zona metropolitana con más de 1.2 millones de habitantes."
+      },
+      {
+        num: 3,
+        pregunta: "¿Cuál es el orden de mayor a menor población?",
+        A: "Barranquilla > Galapa > Malambo > Puerto Colombia",
+        B: "Barranquilla > Malambo > Galapa > Puerto Colombia",
+        C: "Malambo > Barranquilla > Puerto Colombia > Galapa",
+        D: "Puerto Colombia > Galapa > Malambo > Barranquilla",
+        correcta: "B",
+        pista: "Compara los valores: 1.275.854 > 153.223 > 70.042 > 65.686."
+      },
+      {
+        num: 4,
+        pregunta: "¿Cuál es la población total (N) sumando estos 4 municipios?",
+        A: "2.100.000 hab", B: "1.275.854 hab", C: "1.564.805 hab", D: "980.500 hab",
+        correcta: "C",
+        pista: "Suma exactamente las 4 cifras de la tabla de frecuencias."
+      },
+      {
+        num: 5,
+        pregunta: "¿Qué porcentaje del total representa aproximadamente Barranquilla?",
+        A: "50,0%", B: "65,2%", C: "81,5%", D: "44,2%",
+        correcta: "C",
+        pista: "Divide 1.275.854 entre 1.564.805 y multiplícalo por 100."
+      },
+      {
+        num: 6,
+        pregunta: "¿Cuál es el Rango Poblacional (Valor Máximo - Valor Mínimo)?",
+        A: "1.210.168 hab", B: "1.564.805 hab", C: "65.686 hab", D: "1.275.854 hab",
+        correcta: "A",
+        pista: "Resta la población de Puerto Colombia a la de Barranquilla."
+      },
+      {
+        num: 7,
+        pregunta: "Si la escala es 1 cm = 50.000 habitantes, ¿cuánto mide la barra de Barranquilla?",
+        A: "10,5 cm", B: "25,5 cm", C: "50,0 cm", D: "12,7 cm",
+        correcta: "B",
+        pista: "Divide 1.275.854 entre 50.000."
+      }
+    ];
+
+    let preguntaActual = {};
+
+    function girarRuleta() {
+      const ruleta = document.getElementById('ruleta');
+      const indiceAleatorio = Math.floor(Math.random() * preguntas.length);
+      preguntaActual = preguntas[indiceAleatorio];
+
+      let giros = 0;
+      const intervalo = setInterval(() => {
+        ruleta.style.transform = `rotate(${giros * 90}deg)`;
+        ruleta.textContent = Math.floor(Math.random() * 7) + 1;
+        giros++;
+        if (giros > 12) {
+          clearInterval(intervalo);
+          ruleta.style.transform = 'rotate(0deg)';
+          ruleta.textContent = preguntaActual.num;
+          cargarPregunta();
+        }
+      }, 80);
+    }
+
+    function cargarPregunta() {
+      document.getElementById('juego').classList.remove('oculto');
+      document.getElementById('pregunta').textContent = preguntaActual.pregunta;
+      document.getElementById('opcionA').textContent = `A) ${preguntaActual.A}`;
+      document.getElementById('opcionB').textContent = `B) ${preguntaActual.B}`;
+      document.getElementById('opcionC').textContent = `C) ${preguntaActual.C}`;
+      document.getElementById('opcionD').textContent = `D) ${preguntaActual.D}`;
+      
+      document.getElementById('pista').classList.add('oculto');
+      const resultado = document.getElementById('resultado');
+      resultado.textContent = '';
+      resultado.className = 'resultado';
+      document.getElementById('btnSiguiente').classList.add('oculto');
+    }
+
+    function mostrarPista() {
+      const pistaElem = document.getElementById('pista');
+      pistaElem.textContent = preguntaActual.pista;
+      pistaElem.classList.remove('oculto');
+    }
+
+    function verificarRespuesta(opcion) {
+      const resultadoElem = document.getElementById('resultado');
+      if (opcion === preguntaActual.correcta) {
+        resultadoElem.textContent = "😊 ¡Correcto!";
+        resultadoElem.className = "resultado correcto";
+      } else {
+        resultadoElem.textContent = "😢 ¡Incorrecto! Inténtalo de nuevo";
+        resultadoElem.className = "resultado incorrecto";
+      }
+      document.getElementById('btnSiguiente').classList.remove('oculto');
+    }
+
+    function siguientePregunta() {
+      document.getElementById('juego').classList.add('oculto');
+      document.getElementById('ruleta').textContent = "❓";
+    }
+
+    function abrirModal() {
+      document.getElementById('modalEstadisticas').style.display = 'flex';
+    }
+
+    function cerrarModal() {
+      document.getElementById('modalEstadisticas').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
