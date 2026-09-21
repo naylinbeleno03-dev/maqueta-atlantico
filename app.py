@@ -1,9 +1,7 @@
 import streamlit as st
 
-# Configuración de la página
-st.set_page_config(page_title="Juego Interactivo - Atlántico", page_icon="🎡", layout="centered")
+st.set_page_config(page_title="Ruleta Estadística AMB", page_icon="🎡", layout="centered")
 
-# Código HTML, CSS y JavaScript todo en uno
 html_code = """
 <!DOCTYPE html>
 <html lang="es">
@@ -15,76 +13,195 @@ html_code = """
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       min-height: 100vh;
-      background: url('fondo.png?v=2') no-repeat center center fixed;
-      background-size: cover;
+      background: #0f172a;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 20px;
+      padding: 15px;
       color: #f8fafc;
+      overflow-x: hidden;
     }
+
     .card {
-      background: rgba(15, 23, 42, 0.88);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(30, 41, 59, 0.95);
+      border: 2px solid rgba(255, 255, 255, 0.1);
       border-radius: 24px;
-      padding: 30px;
-      max-width: 550px;
+      padding: 25px;
+      max-width: 520px;
       width: 100%;
       text-align: center;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+      position: relative;
     }
-    h1 { color: #38bdf8; font-size: 24px; margin-bottom: 20px; text-shadow: 0 2px 10px rgba(56, 189, 248, 0.3); }
-    .ruleta-container { margin: 20px 0; }
-    .ruleta {
-      width: 110px; height: 110px; background: #1e293b;
-      border: 4px solid #f59e0b; border-radius: 50%;
-      display: flex; justify-content: center; align-items: center;
-      font-size: 42px; font-weight: bold; color: #f59e0b;
-      margin: 0 auto 15px; box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
-      transition: transform 0.1s linear;
+
+    h1 {
+      color: #38bdf8;
+      font-size: 22px;
+      margin-bottom: 15px;
+      text-shadow: 0 2px 10px rgba(56, 189, 248, 0.3);
     }
+
+    /* Contenedor Ruleta Giratoria */
+    .ruleta-box {
+      position: relative;
+      width: 260px;
+      height: 260px;
+      margin: 10px auto 20px;
+    }
+
+    /* Flecha Indicadora */
+    .flecha {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-top: 25px solid #e11d48;
+      z-index: 10;
+      filter: drop-shadow(0 3px 5px rgba(0,0,0,0.5));
+    }
+
+    /* Rueda Multicolor */
+    .ruleta-wheel {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 8px solid #f59e0b;
+      background: conic-gradient(
+        #ef4444 0deg 51.4deg,
+        #3b82f6 51.4deg 102.8deg,
+        #10b981 102.8deg 154.2deg,
+        #f59e0b 154.2deg 205.6deg,
+        #8b5cf6 205.6deg 257deg,
+        #ec4899 257deg 308.4deg,
+        #06b6d4 308.4deg 360deg
+      );
+      box-shadow: 0 0 25px rgba(245, 158, 11, 0.4);
+      transition: transform 3.5s cubic-bezier(0.15, 0.9, 0.15, 1);
+    }
+
+    .ruleta-centro {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 50px;
+      height: 50px;
+      background: #f59e0b;
+      border: 4px solid #ffffff;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      font-size: 20px;
+      color: #0f172a;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    /* Botones principales */
     button {
-      background-color: #0284c7; color: #ffffff; border: none;
-      padding: 12px 24px; font-size: 16px; font-weight: 600;
-      border-radius: 12px; cursor: pointer; transition: all 0.2s ease;
-      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+      background-color: #0284c7;
+      color: #ffffff;
+      border: none;
+      padding: 12px 20px;
+      font-size: 15px;
+      font-weight: 700;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4);
     }
-    button:hover { background-color: #0369a1; transform: translateY(-2px); }
-    .btn-ayuda { background-color: #d97706; margin-bottom: 12px; }
-    .btn-tabla { background-color: #059669; margin-top: 15px; }
-    h2 { color: #f1f5f9; font-size: 19px; margin: 15px 0; line-height: 1.4; }
-    .pista {
-      background: rgba(245, 158, 11, 0.15); border: 1px solid #f59e0b;
-      color: #fef08a; padding: 12px; border-radius: 10px;
-      font-size: 14px; margin-bottom: 15px; text-align: left;
+
+    button:hover {
+      background-color: #0369a1;
+      transform: translateY(-2px);
     }
-    .opciones { display: flex; flex-direction: column; gap: 10px; margin: 15px 0; }
+
+    .btn-girar {
+      background-color: #f59e0b;
+      color: #0f172a;
+      font-size: 17px;
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.5);
+    }
+
+    .btn-girar:hover {
+      background-color: #d97706;
+      color: #ffffff;
+    }
+
+    /* Preguntas y Opciones */
+    .pregunta-titulo {
+      color: #f1f5f9;
+      font-size: 17px;
+      margin: 15px 0;
+      line-height: 1.4;
+    }
+
+    .opciones {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 15px 0;
+    }
+
     .opciones button {
-      background-color: #1e293b; color: #e2e8f0; text-align: left;
-      border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: none;
+      background-color: #1e293b;
+      color: #e2e8f0;
+      text-align: left;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 12px 15px;
+      font-size: 14px;
     }
-    .opciones button:hover { background-color: #334155; color: #ffffff; border-color: #38bdf8; }
-    .resultado { font-size: 22px; font-weight: bold; margin: 15px 0; }
-    .resultado.correcto { color: #4ade80; }
-    .resultado.incorrecto { color: #f87171; }
-    .modal {
-      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px);
-      justify-content: center; align-items: center; z-index: 1000; padding: 20px;
+
+    .opciones button:hover {
+      background-color: #334155;
+      border-color: #38bdf8;
+      color: #ffffff;
     }
-    .modal-content {
-      background: #0f172a; border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 20px; padding: 25px; max-width: 500px; width: 100%;
-      color: #f8fafc; position: relative;
+
+    /* Pantallas Overlay de Respuesta (Acierto / Error) */
+    .overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      animation: fadeIn 0.3s ease-in-out;
     }
-    .close-btn { position: absolute; top: 15px; right: 20px; font-size: 24px; color: #94a3b8; cursor: pointer; }
-    table { width: 100%; border-collapse: collapse; margin: 15px 0; }
-    th, td { border: 1px solid #334155; padding: 10px; text-align: center; font-size: 14px; }
-    th { background-color: #1e293b; color: #38bdf8; }
-    td { background-color: rgba(30, 41, 59, 0.5); }
+
+    .overlay.acierto {
+      background: rgba(16, 185, 129, 0.95);
+    }
+
+    .overlay.error {
+      background: rgba(225, 29, 72, 0.95);
+    }
+
+    .overlay-emoji {
+      font-size: 100px;
+      margin-bottom: 10px;
+      animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .overlay-texto {
+      font-size: 32px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 25px;
+      text-align: center;
+      text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
     .oculto { display: none !important; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes pop { from { transform: scale(0.3); } to { transform: scale(1); } }
   </style>
 </head>
 <body>
@@ -92,119 +209,163 @@ html_code = """
   <div class="card">
     <h1>🎡 Área Metropolitana del Atlántico</h1>
     
-    <div class="ruleta-container">
-      <div id="ruleta" class="ruleta">❓</div>
-      <button id="btnGirar" onclick="girarRuleta()">¡Girar Ruleta!</button>
+    <div class="ruleta-box">
+      <div class="flecha"></div>
+      <div id="wheel" class="ruleta-wheel"></div>
+      <div class="ruleta-centro">⭐</div>
     </div>
 
+    <button id="btnGirar" class="btn-girar" onclick="girarRuleta()">¡GIRAR RULETA!</button>
+
     <div id="juego" class="oculto">
-      <h2 id="pregunta">Pregunta...</h2>
-      <button class="btn-ayuda" onclick="mostrarPista()">💡 Ver Pista</button>
-      <div id="pista" class="pista oculto"></div>
+      <h2 id="pregunta" class="pregunta-titulo">Cargando pregunta...</h2>
+
       <div class="opciones">
         <button onclick="verificarRespuesta('A')" id="opcionA">A) ...</button>
         <button onclick="verificarRespuesta('B')" id="opcionB">B) ...</button>
         <button onclick="verificarRespuesta('C')" id="opcionC">C) ...</button>
         <button onclick="verificarRespuesta('D')" id="opcionD">D) ...</button>
       </div>
-      <div id="resultado" class="resultado"></div>
-      <button id="btnSiguiente" class="btn-siguiente oculto" onclick="siguientePregunta()">Siguiente Pregunta ➡️</button>
     </div>
-
-    <button class="btn-tabla" onclick="abrirModal()">📊 Ver Tabla de Frecuencias</button>
   </div>
 
-  <div id="modalEstadisticas" class="modal">
-    <div class="modal-content">
-      <span class="close-btn" onclick="cerrarModal()">&times;</span>
-      <h2 style="color: #38bdf8; text-align: center;">Tabla de Frecuencia Poblacional</h2>
-      <table>
-        <thead>
-          <tr><th>Municipio</th><th>Población (f<sub>i</sub>)</th><th>Porcentaje (%)</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Barranquilla</td><td>1.275.854</td><td>81.5%</td></tr>
-          <tr><td>Malambo</td><td>153.223</td><td>9.8%</td></tr>
-          <tr><td>Galapa</td><td>70.042</td><td>4.5%</td></tr>
-          <tr><td>Puerto Colombia</td><td>65.686</td><td>4.2%</td></tr>
-        </tbody>
-        <tfoot>
-          <tr style="font-weight: bold; background-color: #1e293b;"><td>Total (N)</td><td>1.564.805</td><td>100.0%</td></tr>
-        </tfoot>
-      </table>
-    </div>
+  <!-- Pantalla Acierto -->
+  <div id="overlayAcierto" class="overlay acierto">
+    <div class="overlay-emoji">🎉👏🥳</div>
+    <div class="overlay-texto">¡EXCELENTE!<br>¡RESPUESTA CORRECTA!</div>
+    <button onclick="cerrarOverlay('overlayAcierto')">Continuar ➡️</button>
+  </div>
+
+  <!-- Pantalla Error -->
+  <div id="overlayError" class="overlay error">
+    <div class="overlay-emoji">😢💔❌</div>
+    <div class="overlay-texto">¡INCORRECTO!<br>¡INTÉNTALO DE NUEVO!</div>
+    <button onclick="cerrarOverlay('overlayError')">Reintentar 🔄</button>
   </div>
 
   <script>
+    // Configuración de Preguntas A, B, C, D
     const preguntas = [
-      { num: 1, pregunta: "¿Cuál es el segundo municipio con mayor población de esta muestra?", A: "Galapa", B: "Malambo", C: "Puerto Colombia", D: "Barranquilla", correcta: "B", pista: "Observa la altura de las barras: busca la que le sigue en altura a la más grande." },
-      { num: 2, pregunta: "¿Qué municipio concentra la Moda (mayor población)?", A: "Malambo", B: "Galapa", C: "Barranquilla", D: "Puerto Colombia", correcta: "C", pista: "Es el núcleo principal de la zona metropolitana." },
-      { num: 3, pregunta: "¿Cuál es el orden de mayor a menor población?", A: "Barranquilla > Galapa > Malambo > Puerto Colombia", B: "Barranquilla > Malambo > Galapa > Puerto Colombia", C: "Malambo > Barranquilla > Puerto Colombia > Galapa", D: "Puerto Colombia > Galapa > Malambo > Barranquilla", correcta: "B", pista: "1.275.854 > 153.223 > 70.042 > 65.686." },
-      { num: 4, pregunta: "¿Cuál es la población total (N) sumando estos 4 municipios?", A: "2.100.000 hab", B: "1.275.854 hab", C: "1.564.805 hab", D: "980.500 hab", correcta: "C", pista: "Suma las 4 cifras." },
-      { num: 5, pregunta: "¿Qué porcentaje del total representa aproximadamente Barranquilla?", A: "50,0%", B: "65,2%", C: "81,5%", D: "44,2%", correcta: "C", pista: "Divide 1.275.854 entre 1.564.805 y multiplícalo por 100." }
+      {
+        pregunta: "1. ¿Cuál es la Población Total (N) representada en la maqueta?",
+        A: "1.564.805 habitantes", B: "1.273.184 habitantes", C: "2.000.000 habitantes", D: "980.500 habitantes",
+        correcta: "A"
+      },
+      {
+        pregunta: "2. ¿Qué municipio representa la MODA (Mayor población)?",
+        A: "Malambo", B: "Puerto Colombia", C: "Barranquilla", D: "Galapa",
+        correcta: "C"
+      },
+      {
+        pregunta: "3. ¿Cuál es el segundo municipio con mayor número de habitantes?",
+        A: "Puerto Colombia", B: "Malambo", C: "Galapa", D: "Soledad",
+        correcta: "B"
+      },
+      {
+        pregunta: "4. ¿Cuál es la escala utilizada en el gráfico de la maqueta?",
+        A: "1 cm = 1.000 habitantes", B: "1 cm = 100.000 habitantes", C: "1 cm = 10.000 habitantes", D: "1 cm = 50.000 habitantes",
+        correcta: "C"
+      },
+      {
+        pregunta: "5. ¿Qué municipio posee la menor población representada?",
+        A: "Puerto Colombia (53.091 hab)", B: "Galapa (95.127 hab)", C: "Malambo (159.386 hab)", D: "Barranquilla",
+        correcta: "A"
+      },
+      {
+        pregunta: "6. ¿Cuál es la diferencia de población entre Barranquilla y Puerto Colombia?",
+        A: "1.220.093 habitantes", B: "500.000 habitantes", C: "100.000 habitantes", D: "850.000 habitantes",
+        correcta: "A"
+      },
+      {
+        pregunta: "7. ¿Cuántos municipios conforman formalmente la Zona Metropolitana?",
+        A: "3 municipios", B: "4 municipios", C: "5 municipios", D: "6 municipios",
+        correcta: "C"
+      }
     ];
 
     let preguntaActual = {};
+    let anguloActual = 0;
 
-    function girarRuleta() {
-      const ruleta = document.getElementById('ruleta');
-      const indiceAleatorio = Math.floor(Math.random() * preguntas.length);
-      preguntaActual = preguntas[indiceAleatorio];
-      let giros = 0;
-      const intervalo = setInterval(() => {
-        ruleta.style.transform = `rotate(${giros * 90}deg)`;
-        ruleta.textContent = Math.floor(Math.random() * 5) + 1;
-        giros++;
-        if (giros > 12) {
-          clearInterval(intervalo);
-          ruleta.style.transform = 'rotate(0deg)';
-          ruleta.textContent = preguntaActual.num;
-          cargarPregunta();
-        }
-      }, 80);
+    // Generador de sonidos integrados por código (Sintetizador Web Audio API)
+    function reproducirSonido(tipo) {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      
+      if (tipo === 'acierto') {
+        // Sonido de Aplausos y Fanfarria
+        const notas = [523.25, 659.25, 783.99, 1046.50];
+        notas.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.3, ctx.currentTime + idx * 0.1);
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + idx * 0.1 + 0.3);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + idx * 0.1);
+          osc.stop(ctx.currentTime + idx * 0.1 + 0.3);
+        });
+      } else if (tipo === 'error') {
+        // Sonido grave de error
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(150, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(60, ctx.currentTime + 0.4);
+        gain.gain.setValueAtTime(0.4, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.4);
+      }
     }
 
-    function cargarPregunta() {
+    function girarRuleta() {
+      document.getElementById('juego').classList.add('oculto');
+      const wheel = document.getElementById('wheel');
+      
+      // Giro aleatorio múltiple
+      const girosExtra = Math.floor(Math.random() * 5) + 5;
+      const anguloRandom = Math.floor(Math.random() * 360);
+      anguloActual += (girosExtra * 360) + anguloRandom;
+      
+      wheel.style.transform = `rotate(${anguloActual}deg)`;
+
+      // Seleccionar pregunta aleatoria tras el giro
+      setTimeout(() => {
+        preguntaActual = preguntas[Math.floor(Math.random() * preguntas.length)];
+        mostrarPregunta();
+      }, 3500);
+    }
+
+    function mostrarPregunta() {
       document.getElementById('juego').classList.remove('oculto');
       document.getElementById('pregunta').textContent = preguntaActual.pregunta;
       document.getElementById('opcionA').textContent = `A) ${preguntaActual.A}`;
       document.getElementById('opcionB').textContent = `B) ${preguntaActual.B}`;
       document.getElementById('opcionC').textContent = `C) ${preguntaActual.C}`;
       document.getElementById('opcionD').textContent = `D) ${preguntaActual.D}`;
-      document.getElementById('pista').classList.add('oculto');
-      document.getElementById('resultado').textContent = '';
-      document.getElementById('btnSiguiente').classList.add('oculto');
-    }
-
-    function mostrarPista() {
-      const pistaElem = document.getElementById('pista');
-      pistaElem.textContent = preguntaActual.pista;
-      pistaElem.classList.remove('oculto');
     }
 
     function verificarRespuesta(opcion) {
-      const resultadoElem = document.getElementById('resultado');
       if (opcion === preguntaActual.correcta) {
-        resultadoElem.textContent = "😊 ¡Correcto!";
-        resultadoElem.className = "resultado correcto";
+        reproducirSonido('acierto');
+        document.getElementById('overlayAcierto').style.display = 'flex';
       } else {
-        resultadoElem.textContent = "😢 ¡Incorrecto!";
-        resultadoElem.className = "resultado incorrecto";
+        reproducirSonido('error');
+        document.getElementById('overlayError').style.display = 'flex';
       }
-      document.getElementById('btnSiguiente').classList.remove('oculto');
     }
 
-    function siguientePregunta() {
-      document.getElementById('juego').classList.add('oculto');
-      document.getElementById('ruleta').textContent = "❓";
+    function cerrarOverlay(id) {
+      document.getElementById(id).style.display = 'none';
+      if (id === 'overlayAcierto') {
+        document.getElementById('juego').classList.add('oculto');
+      }
     }
-
-    function abrirModal() { document.getElementById('modalEstadisticas').style.display = 'flex'; }
-    function cerrarModal() { document.getElementById('modalEstadisticas').style.display = 'none'; }
   </script>
 </body>
 </html>
 """
 
-# Renderiza la aplicación web dentro de Streamlit
-st.components.v1.html(html_code, height=750, scrolling=True)
+st.components.v1.html(html_code, height=720, scrolling=True)
