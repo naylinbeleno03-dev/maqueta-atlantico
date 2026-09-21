@@ -1,6 +1,44 @@
 import streamlit as st
 
-st.set_page_config(page_title="Ruleta Interactiva AMB", page_icon="🎡", layout="centered")
+st.set_page_config(
+    page_title="Ruleta Interactiva AMB", 
+    page_icon="🎡", 
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
+
+# Estilos para eliminar el fondo oscuro/gris por defecto de Streamlit y ocultar menús
+st.markdown("""
+    <style>
+    #MainMenu {visibility: hidden;}
+    header {visibility: hidden;}
+    footer {visibility: hidden;}
+    
+    .stApp {
+        background: linear-gradient(-45deg, #0f172a, #1e1b4b, #311042, #0284c7) !important;
+        background-size: 400% 400% !important;
+        animation: gradientBG 12s ease infinite !important;
+    }
+
+    @keyframes gradientBG {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .block-container {
+        padding-top: 0rem !important;
+        padding-bottom: 0rem !important;
+        padding-left: 0rem !important;
+        padding-right: 0rem !important;
+        max-width: 100% !important;
+    }
+    
+    iframe {
+        border: none !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 html_code = """
 <!DOCTYPE html>
@@ -13,57 +51,45 @@ html_code = """
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
       font-family: 'Poppins', sans-serif;
       min-height: 100vh;
-      background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+      background: transparent;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 15px;
+      padding: 10px;
       color: #f8fafc;
       overflow-x: hidden;
     }
 
     .card {
-      background: rgba(30, 41, 59, 0.85);
+      background: rgba(15, 23, 42, 0.7);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      border-radius: 28px;
+      border: 1.5px solid rgba(255, 255, 255, 0.25);
+      border-radius: 32px;
       padding: 25px 20px;
-      max-width: 540px;
+      max-width: 520px;
       width: 100%;
       text-align: center;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
-      position: relative;
-    }
-
-    .marcador {
-      display: inline-block;
-      background: rgba(15, 23, 42, 0.8);
-      border: 1px solid #f59e0b;
-      padding: 6px 16px;
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: 700;
-      color: #fbbf24;
-      margin-bottom: 12px;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.4);
     }
 
     h1 {
-      font-size: 22px;
+      font-size: 23px;
       font-weight: 800;
-      background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+      background: linear-gradient(135deg, #38bdf8 0%, #f43f5e 50%, #fbbf24 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 15px;
+      margin-bottom: 18px;
     }
 
     .ruleta-container {
       position: relative;
-      width: 310px;
-      height: 310px;
+      width: 300px;
+      height: 300px;
       margin: 10px auto 20px;
       display: flex;
       justify-content: center;
@@ -75,8 +101,8 @@ html_code = """
       width: 100%;
       height: 100%;
       border-radius: 50%;
-      background: linear-gradient(145deg, #fbbf24, #b45309);
-      box-shadow: 0 0 35px rgba(245, 158, 11, 0.5), inset 0 2px 5px rgba(255,255,255,0.6);
+      background: linear-gradient(145deg, #f59e0b, #b45309, #f59e0b);
+      box-shadow: 0 0 35px rgba(245, 158, 11, 0.7), inset 0 2px 6px rgba(255,255,255,0.8);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -84,56 +110,56 @@ html_code = """
 
     .flecha {
       position: absolute;
-      top: -15px;
+      top: -16px;
       left: 50%;
       transform: translateX(-50%);
       width: 0;
       height: 0;
       border-left: 18px solid transparent;
       border-right: 18px solid transparent;
-      border-top: 30px solid #f43f5e;
+      border-top: 32px solid #f43f5e;
       z-index: 30;
-      filter: drop-shadow(0 6px 8px rgba(0,0,0,0.7));
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,0.8));
     }
 
     #canvasRuleta {
       border-radius: 50%;
       border: 5px solid #ffffff;
-      box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
+      box-shadow: inset 0 0 15px rgba(0,0,0,0.6);
       transition: transform 4s cubic-bezier(0.15, 0.85, 0.15, 1);
     }
 
     .ruleta-centro {
       position: absolute;
-      width: 55px;
-      height: 55px;
+      width: 58px;
+      height: 58px;
       background: radial-gradient(circle, #fef08a 0%, #f59e0b 100%);
       border: 4px solid #ffffff;
       border-radius: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 22px;
+      font-size: 24px;
       z-index: 20;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.6);
     }
 
     .btn-girar {
       background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
       color: #0f172a;
       border: none;
-      padding: 14px 32px;
+      padding: 15px 36px;
       font-size: 16px;
       font-weight: 800;
       border-radius: 50px;
       cursor: pointer;
-      box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.6);
-      transition: all 0.2s ease;
+      box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.7);
+      transition: all 0.25s ease;
     }
 
     .btn-girar:hover {
-      transform: translateY(-3px) scale(1.03);
-      box-shadow: 0 15px 30px -5px rgba(245, 158, 11, 0.8);
+      transform: translateY(-3px) scale(1.04);
+      box-shadow: 0 15px 35px -5px rgba(245, 158, 11, 0.9);
     }
 
     #juego {
@@ -142,9 +168,9 @@ html_code = """
     }
 
     .pregunta-box {
-      background: rgba(15, 23, 42, 0.7);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 18px;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
       padding: 18px;
       margin-bottom: 18px;
     }
@@ -152,7 +178,7 @@ html_code = """
     .pregunta-titulo {
       font-size: 15px;
       font-weight: 600;
-      color: #f1f5f9;
+      color: #f8fafc;
       line-height: 1.5;
     }
 
@@ -166,21 +192,21 @@ html_code = """
       background: rgba(30, 41, 59, 0.85);
       color: #e2e8f0;
       border: 1px solid rgba(255, 255, 255, 0.15);
-      padding: 13px 16px;
-      font-size: 13.5px;
+      padding: 14px 18px;
+      font-size: 14px;
       font-weight: 600;
       font-family: inherit;
-      border-radius: 14px;
+      border-radius: 16px;
       cursor: pointer;
       text-align: left;
-      transition: all 0.2s ease;
+      transition: all 0.25s ease;
     }
 
     .opciones button:hover {
       background: #0284c7;
       color: #ffffff;
       border-color: #38bdf8;
-      transform: translateX(4px);
+      transform: translateX(5px);
     }
 
     .overlay {
@@ -191,22 +217,22 @@ html_code = """
       justify-content: center;
       align-items: center;
       z-index: 9999;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
     }
 
     .overlay.acierto { background: rgba(6, 78, 59, 0.92); }
     .overlay.error { background: rgba(136, 19, 55, 0.92); }
 
     .overlay-card {
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 24px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 28px;
       padding: 35px;
       text-align: center;
       max-width: 380px;
       width: 90%;
-      box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.7);
     }
 
     .overlay-emoji { font-size: 70px; margin-bottom: 10px; }
@@ -222,9 +248,9 @@ html_code = """
       background: #ffffff;
       color: #0f172a;
       border: none;
-      padding: 12px 26px;
+      padding: 13px 30px;
       font-size: 15px;
-      font-weight: 700;
+      font-weight: 800;
       border-radius: 50px;
       cursor: pointer;
     }
@@ -237,7 +263,6 @@ html_code = """
 <body>
 
   <div class="card">
-    <div class="marcador">⭐ PUNTOS: <span id="puntos">0</span></div>
     <h1>🎡 Área Metropolitana del Atlántico</h1>
     
     <div class="ruleta-container">
@@ -267,7 +292,7 @@ html_code = """
   <div id="overlayAcierto" class="overlay acierto">
     <div class="overlay-card">
       <div class="overlay-emoji">🥳</div>
-      <div class="overlay-titulo">¡EXCELENTE!<br>+100 Puntos</div>
+      <div class="overlay-titulo">¡EXCELENTE!<br>Respuesta Correcta</div>
       <button class="btn-continuar" onclick="cerrarOverlay('overlayAcierto')">Continuar ➡️</button>
     </div>
   </div>
@@ -281,9 +306,6 @@ html_code = """
   </div>
 
   <script>
-    let puntaje = 0;
-
-    // Preguntas sincronizadas 100% con los datos exactos de Shadya
     const sectores = [
       {
         titulo: "2do MÁS POBLADO",
@@ -440,8 +462,6 @@ html_code = """
 
     function verificarRespuesta(opcion) {
       if (opcion === sectorSeleccionado.correcta) {
-        puntaje += 100;
-        document.getElementById('puntos').textContent = puntaje;
         reproducirSonido('acierto');
         confetti({ particleCount: 130, spread: 80, origin: { y: 0.6 } });
         document.getElementById('overlayAcierto').style.display = 'flex';
@@ -462,4 +482,4 @@ html_code = """
 </html>
 """
 
-st.components.v1.html(html_code, height=780, scrolling=True)
+st.components.v1.html(html_code, height=850, scrolling=False)
