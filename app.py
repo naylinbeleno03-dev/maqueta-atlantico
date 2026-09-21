@@ -25,19 +25,30 @@ html_code = """
       overflow-x: hidden;
     }
 
-    /* Tarjeta Principal */
     .card {
-      background: rgba(30, 41, 59, 0.75);
+      background: rgba(30, 41, 59, 0.85);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 2px solid rgba(255, 255, 255, 0.2);
       border-radius: 28px;
-      padding: 30px 20px;
+      padding: 25px 20px;
       max-width: 540px;
       width: 100%;
       text-align: center;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
       position: relative;
+    }
+
+    .marcador {
+      display: inline-block;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid #f59e0b;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fbbf24;
+      margin-bottom: 12px;
     }
 
     h1 {
@@ -46,35 +57,31 @@ html_code = """
       background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 20px;
-      letter-spacing: -0.5px;
+      margin-bottom: 15px;
     }
 
-    /* Contenedor de la Ruleta */
     .ruleta-container {
       position: relative;
       width: 310px;
       height: 310px;
-      margin: 10px auto 25px;
+      margin: 10px auto 20px;
       display: flex;
       justify-content: center;
       align-items: center;
     }
 
-    /* Marco Exterior Dorado */
     .ruleta-outer-ring {
       position: absolute;
       width: 100%;
       height: 100%;
       border-radius: 50%;
       background: linear-gradient(145deg, #fbbf24, #b45309);
-      box-shadow: 0 0 30px rgba(245, 158, 11, 0.4), inset 0 2px 5px rgba(255,255,255,0.5);
+      box-shadow: 0 0 35px rgba(245, 158, 11, 0.5), inset 0 2px 5px rgba(255,255,255,0.6);
       display: flex;
       justify-content: center;
       align-items: center;
     }
 
-    /* Flecha Indicadora 3D */
     .flecha {
       position: absolute;
       top: -15px;
@@ -86,10 +93,9 @@ html_code = """
       border-right: 18px solid transparent;
       border-top: 30px solid #f43f5e;
       z-index: 30;
-      filter: drop-shadow(0 6px 8px rgba(0,0,0,0.6));
+      filter: drop-shadow(0 6px 8px rgba(0,0,0,0.7));
     }
 
-    /* Ruleta Canvas con Nombres */
     #canvasRuleta {
       border-radius: 50%;
       border: 5px solid #ffffff;
@@ -97,7 +103,6 @@ html_code = """
       transition: transform 4s cubic-bezier(0.15, 0.85, 0.15, 1);
     }
 
-    /* Centro Estrella 3D */
     .ruleta-centro {
       position: absolute;
       width: 55px;
@@ -113,7 +118,6 @@ html_code = """
       box-shadow: 0 4px 15px rgba(0,0,0,0.5);
     }
 
-    /* Botón Principal */
     .btn-girar {
       background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
       color: #0f172a;
@@ -123,67 +127,62 @@ html_code = """
       font-weight: 800;
       border-radius: 50px;
       cursor: pointer;
-      box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.5);
+      box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.6);
       transition: all 0.2s ease;
-      letter-spacing: 0.5px;
     }
 
     .btn-girar:hover {
-      transform: translateY(-3px) scale(1.02);
-      box-shadow: 0 15px 30px -5px rgba(245, 158, 11, 0.7);
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 15px 30px -5px rgba(245, 158, 11, 0.8);
     }
 
-    /* Panel de Preguntas */
     #juego {
-      margin-top: 25px;
+      margin-top: 20px;
       animation: fadeInUp 0.4s ease-out;
     }
 
     .pregunta-box {
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255,255,255,0.12);
       border-radius: 18px;
       padding: 18px;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
     .pregunta-titulo {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 600;
       color: #f1f5f9;
       line-height: 1.5;
     }
 
-    /* Opciones A, B, C, D */
     .opciones {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
 
     .opciones button {
-      background: rgba(30, 41, 59, 0.8);
+      background: rgba(30, 41, 59, 0.85);
       color: #e2e8f0;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      padding: 14px 18px;
-      font-size: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 13px 16px;
+      font-size: 13.5px;
       font-weight: 600;
       font-family: inherit;
       border-radius: 14px;
       cursor: pointer;
       text-align: left;
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.2s ease;
     }
 
     .opciones button:hover {
       background: #0284c7;
       color: #ffffff;
       border-color: #38bdf8;
-      transform: translateX(5px);
-      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4);
+      transform: translateX(4px);
     }
 
-    /* Overlays Pantalla Completa */
     .overlay {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
@@ -194,55 +193,51 @@ html_code = """
       z-index: 9999;
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      animation: fadeIn 0.3s ease;
     }
 
     .overlay.acierto { background: rgba(6, 78, 59, 0.92); }
     .overlay.error { background: rgba(136, 19, 55, 0.92); }
 
     .overlay-card {
-      background: rgba(15, 23, 42, 0.8);
+      background: rgba(15, 23, 42, 0.85);
       border: 1px solid rgba(255,255,255,0.2);
       border-radius: 24px;
-      padding: 40px;
+      padding: 35px;
       text-align: center;
-      max-width: 400px;
+      max-width: 380px;
       width: 90%;
-      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.6);
     }
 
-    .overlay-emoji { font-size: 75px; margin-bottom: 15px; }
+    .overlay-emoji { font-size: 70px; margin-bottom: 10px; }
 
     .overlay-titulo {
-      font-size: 26px;
+      font-size: 24px;
       font-weight: 800;
       color: #ffffff;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
     .btn-continuar {
       background: #ffffff;
       color: #0f172a;
       border: none;
-      padding: 12px 28px;
+      padding: 12px 26px;
       font-size: 15px;
       font-weight: 700;
       border-radius: 50px;
       cursor: pointer;
-      transition: all 0.2s;
     }
-
-    .btn-continuar:hover { transform: scale(1.05); }
 
     .oculto { display: none !important; }
 
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
 <body>
 
   <div class="card">
+    <div class="marcador">⭐ PUNTOS: <span id="puntos">0</span></div>
     <h1>🎡 Área Metropolitana del Atlántico</h1>
     
     <div class="ruleta-container">
@@ -269,16 +264,14 @@ html_code = """
     </div>
   </div>
 
-  <!-- Pantalla Acierto -->
   <div id="overlayAcierto" class="overlay acierto">
     <div class="overlay-card">
       <div class="overlay-emoji">🥳</div>
-      <div class="overlay-titulo">¡EXCELENTE!<br>Respuesta Correcta</div>
+      <div class="overlay-titulo">¡EXCELENTE!<br>+100 Puntos</div>
       <button class="btn-continuar" onclick="cerrarOverlay('overlayAcierto')">Continuar ➡️</button>
     </div>
   </div>
 
-  <!-- Pantalla Error -->
   <div id="overlayError" class="overlay error">
     <div class="overlay-card">
       <div class="overlay-emoji">😢</div>
@@ -288,19 +281,21 @@ html_code = """
   </div>
 
   <script>
-    // Las 7 preguntas exactas ajustadas sin Soledad
+    let puntaje = 0;
+
+    // Preguntas sincronizadas 100% con los datos exactos de Shadya
     const sectores = [
       {
         titulo: "2do MÁS POBLADO",
         color: "#dc2626",
-        pregunta: "1. ¿Cuál es el segundo municipio con más población?",
+        pregunta: "1. ¿Cuál es el segundo municipio más poblado (153.223 hab)?",
         A: "Malambo", B: "Galapa", C: "Puerto Colombia", D: "Barranquilla",
         correcta: "A"
       },
       {
         titulo: "MAYOR POBLACIÓN",
         color: "#2563eb",
-        pregunta: "2. ¿Qué municipio concentra la mayor población?",
+        pregunta: "2. ¿Qué municipio concentra la mayor población (1.275.854 hab)?",
         A: "Galapa", B: "Barranquilla", C: "Malambo", D: "Puerto Colombia",
         correcta: "B"
       },
@@ -309,40 +304,40 @@ html_code = """
         color: "#059669",
         pregunta: "3. Ordena los municipios de mayor a menor población:",
         A: "Barranquilla > Malambo > Galapa > Puerto Colombia",
-        B: "Barranquilla > Galapa > Malambo > Puerto Colombia",
+        B: "Barranquilla > Malambo > Puerto Colombia > Galapa",
         C: "Malambo > Barranquilla > Galapa > Puerto Colombia",
         D: "Puerto Colombia > Galapa > Malambo > Barranquilla",
-        correcta: "A"
+        correcta: "B"
       },
       {
         titulo: "POBLACIÓN TOTAL",
         color: "#d97706",
-        pregunta: "4. ¿Cuál es la población total de la zona metropolitana representada?",
-        A: "1.273.184 habitantes", B: "1.580.788 habitantes", C: "1.850.000 habitantes", D: "950.000 habitantes",
+        pregunta: "4. ¿Cuál es la población total de los 4 municipios combinados?",
+        A: "1.275.854 habitantes", B: "1.564.805 habitantes", C: "1.850.000 habitantes", D: "2.000.000 habitantes",
         correcta: "B"
       },
       {
         titulo: "% BARRANQUILLA",
         color: "#7c3aed",
-        pregunta: "5. ¿Aproximadamente qué porcentaje de la población total representa Barranquilla?",
-        A: "50%", B: "80%", C: "65%", D: "95%",
+        pregunta: "5. ¿Qué porcentaje de la población total del Atlántico representa Barranquilla?",
+        A: "50,0%", B: "44,2%", C: "35,8%", D: "60,1%",
         correcta: "B"
       },
       {
         titulo: "RANGO POBLACIÓN",
         color: "#db2777",
-        pregunta: "6. ¿Cuál es el rango de la población (Diferencia entre el mayor y menor)?",
-        A: "1.220.093 habitantes", B: "1.100.000 habitantes", C: "950.000 habitantes", D: "1.273.184 habitantes",
+        pregunta: "6. ¿Cuál es el rango poblacional (Barranquilla - Puerto Colombia)?",
+        A: "1.210.168 habitantes", B: "1.100.000 habitantes", C: "950.000 habitantes", D: "1.275.854 habitantes",
         correcta: "A"
       },
       {
         titulo: "ESCALA MAQUETA",
         color: "#0891b2",
-        pregunta: "7. ¿Qué significa la escala 1 cm = 50.000 habitantes?",
-        A: "Que la maqueta mide 50 cm de largo",
-        B: "Que 1 cm de barra representa 50.000 personas reales",
-        C: "Que hay 50.000 habitantes en todo el Atlántico",
-        D: "Que cada municipio mide 1 cm",
+        pregunta: "7. ¿Qué representa la escala 1 cm = 50.000 habitantes?",
+        A: "Que la maqueta mide 50 cm",
+        B: "Que 1 cm de barra física equivale a 50.000 habitantes",
+        C: "Que cada municipio tiene 50.000 habitantes",
+        D: "Que la distancia entre municipios es de 1 cm",
         correcta: "B"
       }
     ];
@@ -352,7 +347,6 @@ html_code = """
     const numSectores = sectores.length;
     const anguloArc = (2 * Math.PI) / numSectores;
 
-    // Dibujar la Ruleta con Textos
     function dibujarRuleta() {
       const centroX = canvas.width / 2;
       const centroY = canvas.height / 2;
@@ -362,7 +356,6 @@ html_code = """
         const anguloInicio = i * anguloArc;
         const anguloFin = (i + 1) * anguloArc;
 
-        // Sector de color
         ctx.beginPath();
         ctx.fillStyle = sectores[i].color;
         ctx.moveTo(centroX, centroY);
@@ -372,7 +365,6 @@ html_code = """
         ctx.strokeStyle = "#ffffff";
         ctx.stroke();
 
-        // Texto curvado/rotado en cada sector
         ctx.save();
         ctx.translate(centroX, centroY);
         ctx.rotate(anguloInicio + anguloArc / 2);
@@ -389,7 +381,6 @@ html_code = """
     let sectorSeleccionado = {};
     let anguloActual = 0;
 
-    // Sintetizador Web Audio para Sonidos HD
     function reproducirSonido(tipo) {
       const ctxAudio = new (window.AudioContext || window.webkitAudioContext)();
       if (tipo === 'acierto') {
@@ -427,7 +418,6 @@ html_code = """
       
       sectorSeleccionado = sectores[indiceAleatorio];
 
-      // Cálculo del ángulo exacto para detenerse bajo la flecha superior (270 deg)
       const anguloSectorDeg = 360 / numSectores;
       const anguloMeta = 270 - (indiceAleatorio * anguloSectorDeg) - (anguloSectorDeg / 2);
       
@@ -450,8 +440,10 @@ html_code = """
 
     function verificarRespuesta(opcion) {
       if (opcion === sectorSeleccionado.correcta) {
+        puntaje += 100;
+        document.getElementById('puntos').textContent = puntaje;
         reproducirSonido('acierto');
-        confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
+        confetti({ particleCount: 130, spread: 80, origin: { y: 0.6 } });
         document.getElementById('overlayAcierto').style.display = 'flex';
       } else {
         reproducirSonido('error');
