@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Juego Interactivos - Zona Metropolitana</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="card">
+    <h1>🎡 Juego de la Zona Metropolitana</h1>
+    
+    <!-- Sección de la Ruleta -->
+    <div class="ruleta-container">
+      <div id="ruleta" class="ruleta">❓</div>
+      <button id="btnGirar" onclick="girarRuleta()">¡Girar Ruleta!</button>
+    </div>
+
+    <!-- Contenedor del Juego -->
+    <div id="juego" class="oculto">
+      <h2 id="pregunta">Pregunta aquí...</h2>
+
+      <!-- Botón de Ayuda y Pista -->
+      <button class="btn-ayuda" onclick="mostrarPista()">💡 Pedir Ayuda</button>
+      <p id="pista" class="pista oculto"></p>
+
+      <!-- Opciones A, B, C, D -->
+      <div class="opciones">
+        <button onclick="verificarRespuesta('A')" id="opcionA">A) ...</button>
+        <button onclick="verificarRespuesta('B')" id="opcionB">B) ...</button>
+        <button onclick="verificarRespuesta('C')" id="opcionC">C) ...</button>
+        <button onclick="verificarRespuesta('D')" id="opcionD">D) ...</button>
+      </div>
+
+      <!-- Retroalimentación con Caritas -->
+      <div id="resultado" class="resultado"></div>
+      <button id="btnSiguiente" class="btn-siguiente oculto" onclick="siguientePregunta()">Siguiente Pregunta ➡️</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
