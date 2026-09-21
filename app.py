@@ -1,13 +1,13 @@
 import streamlit as st
 
 st.set_page_config(
-    page_title="Ruleta Interactiva AMB", 
+    page_title="Ruleta Área Metropolitana del Atlántico", 
     page_icon="🎡", 
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
-# Estilos para eliminar el fondo oscuro/gris por defecto de Streamlit y ocultar menús
+# Estilos CSS con siluetas ilustradas alusivas a los 4 municipios
 st.markdown("""
     <style>
     #MainMenu {visibility: hidden;}
@@ -15,22 +15,27 @@ st.markdown("""
     footer {visibility: hidden;}
     
     .stApp {
-        background: linear-gradient(-45deg, #0f172a, #1e1b4b, #311042, #0284c7) !important;
-        background-size: 400% 400% !important;
-        animation: gradientBG 12s ease infinite !important;
+        background: 
+            /* Siluetas/Efectos festivos en marca de agua */
+            radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.25) 0%, transparent 40%),
+            radial-gradient(circle at 90% 80%, rgba(244, 63, 94, 0.25) 0%, transparent 40%),
+            linear-gradient(135deg, #0b132b 0%, #1c2541 40%, #3a506b 100%) !important;
+        background-attachment: fixed !important;
     }
 
-    @keyframes gradientBG {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
+    /* Fondo con ilustración vectorial de los municipios */
+    .stApp::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        opacity: 0.12;
+        pointer-events: none;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600"><path fill="%23FFFFFF" d="M0,500 L200,500 L200,450 L220,400 L240,450 L240,500 L500,500 L500,480 L520,420 L540,480 L540,500 L1000,500 L1000,600 L0,600 Z"/><circle cx="150" cy="350" r="40" fill="%23FFFFFF"/><path fill="%23FFFFFF" d="M750,400 C780,380 820,380 850,400 L850,500 L750,500 Z"/></svg>');
+        background-size: cover;
     }
 
     .block-container {
-        padding-top: 0rem !important;
-        padding-bottom: 0rem !important;
-        padding-left: 0rem !important;
-        padding-right: 0rem !important;
+        padding: 0rem !important;
         max-width: 100% !important;
     }
     
@@ -57,28 +62,52 @@ html_code = """
       min-height: 100vh;
       background: transparent;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 10px;
+      padding: 15px;
       color: #f8fafc;
       overflow-x: hidden;
     }
 
+    /* Banners alusivos a los 4 municipios en las esquinas/fondo */
+    .etiquetas-municipios {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .badge-mun {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fef08a;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    /* Tarjeta Principal */
     .card {
-      background: rgba(15, 23, 42, 0.7);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1.5px solid rgba(255, 255, 255, 0.25);
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 2px solid rgba(255, 255, 255, 0.3);
       border-radius: 32px;
-      padding: 25px 20px;
-      max-width: 520px;
+      padding: 25px 22px;
+      max-width: 530px;
       width: 100%;
       text-align: center;
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.4);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.4);
     }
 
     h1 {
-      font-size: 23px;
+      font-size: 22px;
       font-weight: 800;
       background: linear-gradient(135deg, #38bdf8 0%, #f43f5e 50%, #fbbf24 100%);
       -webkit-background-clip: text;
@@ -168,8 +197,8 @@ html_code = """
     }
 
     .pregunta-box {
-      background: rgba(15, 23, 42, 0.75);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 20px;
       padding: 18px;
       margin-bottom: 18px;
@@ -189,9 +218,9 @@ html_code = """
     }
 
     .opciones button {
-      background: rgba(30, 41, 59, 0.85);
+      background: rgba(30, 41, 59, 0.9);
       color: #e2e8f0;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       padding: 14px 18px;
       font-size: 14px;
       font-weight: 600;
@@ -261,6 +290,13 @@ html_code = """
   </style>
 </head>
 <body>
+
+  <div class="etiquetas-municipios">
+    <span class="badge-mun">🌆 Barranquilla</span>
+    <span class="badge-mun">🌊 Puerto Colombia</span>
+    <span class="badge-mun">🎭 Galapa</span>
+    <span class="badge-mun">🏗️ Malambo</span>
+  </div>
 
   <div class="card">
     <h1>🎡 Área Metropolitana del Atlántico</h1>
@@ -482,4 +518,4 @@ html_code = """
 </html>
 """
 
-st.components.v1.html(html_code, height=850, scrolling=False)
+st.components.v1.html(html_code, height=880, scrolling=False)
