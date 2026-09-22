@@ -10,15 +10,20 @@ st.set_page_config(
 
 # Convertir la imagen local a base64 para cargarla directamente en el CSS
 def get_base64_image(image_path):
-    with open(image_path, "rb") as img_file:
-        return base64.b64encode(img_file.read()).decode()
+    try:
+        with open(image_path, "rb") as img_file:
+            return base64.b64encode(img_file.read()).decode()
+    except Exception:
+        return None
 
-try:
-    img_base64 = get_base64_image("fondo.png")
+img_base64 = get_base64_image("fondo.png")
+
+if img_base64:
     bg_style = f"background-image: url('data:image/png;base64,{img_base64}');"
-except Exception:
+else:
     bg_style = "background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);"
 
+# Ocultar la barra superior, pie de página y márgenes de Streamlit
 st.markdown(f"""
     <style>
     #MainMenu {{visibility: hidden;}}
@@ -33,11 +38,13 @@ st.markdown(f"""
         background-attachment: fixed !important;
     }}
 
+    /* Eliminar paddings de Streamlit */
     .block-container {{
         padding: 0rem !important;
         max-width: 100% !important;
     }}
     
+    /* Adaptar el Iframe al 100% de la pantalla */
     iframe {{
         border: none !important;
         width: 100% !important;
@@ -66,7 +73,7 @@ html_code = """
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      padding: 10px;
+      padding: 15px 10px 40px 10px;
       color: #1e293b;
       overflow-x: hidden;
       overflow-y: auto;
@@ -74,15 +81,15 @@ html_code = """
 
     /* Tarjeta Adaptable para Celular y Portátil */
     .card {
-      background: rgba(255, 255, 255, 0.94);
+      background: rgba(255, 255, 255, 0.95);
       border: 2px solid rgba(255, 255, 255, 0.9);
       border-radius: 24px;
       padding: 20px;
-      max-width: 500px;
+      max-width: 520px;
       width: 100%;
       text-align: center;
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-      margin: 10px auto 30px;
+      margin: 10px auto;
     }
 
     h1 {
@@ -97,8 +104,8 @@ html_code = """
 
     .ruleta-container {
       position: relative;
-      width: min(300px, 75vw);
-      height: min(300px, 75vw);
+      width: min(280px, 70vw);
+      height: min(280px, 70vw);
       margin: 10px auto 15px;
       display: flex;
       justify-content: center;
@@ -226,7 +233,6 @@ html_code = """
       border-color: #0284c7;
     }
 
-    /* Modal / Overlay full-screen */
     .overlay {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
@@ -577,7 +583,6 @@ html_code = """
       document.getElementById('opcionC').textContent = `C) ${sectorSeleccionado.C}`;
       document.getElementById('opcionD').textContent = `D) ${sectorSeleccionado.D}`;
       
-      // Auto-scroll suave en móviles hacia la pregunta
       document.getElementById('juego').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
@@ -603,5 +608,5 @@ html_code = """
 </html>
 """
 
-# Se habilita scrolling=True para garantizar visibilidad total en móviles
-st.components.v1.html(html_code, height=880, scrolling=True)
+# Se define una altura suficiente y scrolling activado para no recortar la vista
+st.components.v1.html(html_code, height=1000, scrolling=True)
