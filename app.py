@@ -69,7 +69,7 @@ html_code = """
       overflow: hidden;
     }
 
-    /* Tarjeta Principal Tamaño Compacto Ideal */
+    /* Tarjeta Principal Tamaño Compacto */
     .card {
       background: rgba(255, 255, 255, 0.95);
       border: 2px solid rgba(255, 255, 255, 0.9);
@@ -416,34 +416,79 @@ html_code = """
 
     let sectorSeleccionado = {};
     let anguloActual = 0;
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    // Reproducir un sonido de 'tic' corto
+    function reproducirTic() {
+      initAudio();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + 0.03);
+      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.03);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.03);
+    }
+
+    // Efecto de sonido mientras la ruleta gira (ralentizándose gradualmente)
+    function reproducirSonidoGiro(duracionMs) {
+      initAudio();
+      let tiempoTranscurrido = 0;
+      let intervaloActual = 40; // Comienza girando rápido (un tic cada 40ms)
+
+      function programarSiguienteTic() {
+        if (tiempoTranscurrido < duracionMs) {
+          reproducirTic();
+          tiempoTranscurrido += intervaloActual;
+          // Se va ralentizando progresivamente hacia el final
+          intervaloActual = 40 + Math.pow(tiempoTranscurrido / duracionMs, 2.5) * 280;
+          setTimeout(programarSiguienteTic, intervaloActual);
+        }
+      }
+
+      programarSiguienteTic();
+    }
 
     function reproducirSonido(tipo) {
-      const ctxAudio = new (window.AudioContext || window.webkitAudioContext)();
+      initAudio();
       if (tipo === 'acierto') {
         const notas = [523.25, 659.25, 783.99, 1046.50];
         notas.forEach((freq, idx) => {
-          const osc = ctxAudio.createOscillator();
-          const gain = ctxAudio.createGain();
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
           osc.frequency.value = freq;
-          gain.gain.setValueAtTime(0.2, ctxAudio.currentTime + idx * 0.08);
-          gain.gain.exponentialRampToValueAtTime(0.001, ctxAudio.currentTime + idx * 0.08 + 0.3);
+          gain.gain.setValueAtTime(0.2, audioCtx.currentTime + idx * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.08 + 0.3);
           osc.connect(gain);
-          gain.connect(ctxAudio.destination);
-          osc.start(ctxAudio.currentTime + idx * 0.08);
-          osc.stop(ctxAudio.currentTime + idx * 0.08 + 0.3);
+          gain.connect(audioCtx.destination);
+          osc.start(audioCtx.currentTime + idx * 0.08);
+          osc.stop(audioCtx.currentTime + idx * 0.08 + 0.3);
         });
       } else {
-        const osc = ctxAudio.createOscillator();
-        const gain = ctxAudio.createGain();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
         osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(140, ctxAudio.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(40, ctxAudio.currentTime + 0.35);
-        gain.gain.setValueAtTime(0.3, ctxAudio.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctxAudio.currentTime + 0.35);
+        osc.frequency.setValueAtTime(140, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.35);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
         osc.connect(gain);
-        gain.connect(ctxAudio.destination);
+        gain.connect(audioCtx.destination);
         osc.start();
-        osc.stop(ctxAudio.currentTime + 0.35);
+        osc.stop(audioCtx.currentTime + 0.35);
       }
     }
 
@@ -459,6 +504,9 @@ html_code = """
       
       anguloActual += (girosExtra * 360) + (anguloMeta - (anguloActual % 360));
       canvas.style.transform = `rotate(${anguloActual}deg)`;
+
+      // Reproducir los tics durante los 4 segundos que dura la animación
+      reproducirSonidoGiro(4000);
 
       setTimeout(() => {
         mostrarPregunta();
