@@ -1,12 +1,13 @@
-import streamlit as st
 import base64
+import streamlit as st
 
 st.set_page_config(
-    page_title="Ruleta Zona Metropolitana del Atlántico", 
-    page_icon="🎡", 
+    page_title="Ruleta Zona Metropolitana del Atlántico",
+    page_icon="🎡",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="collapsed",
 )
+
 
 # Convertir la imagen local a base64 para cargarla directamente en el CSS
 def get_base64_image(image_path):
@@ -16,6 +17,7 @@ def get_base64_image(image_path):
     except Exception:
         return None
 
+
 img_base64 = get_base64_image("fondo.png")
 
 if img_base64:
@@ -23,8 +25,9 @@ if img_base64:
 else:
     bg_style = "background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);"
 
-# Ocultar la barra superior, pie de página y ajustar fondo de Streamlit
-st.markdown(f"""
+# Ocultar la barra superior, pie de página y ajustar fondo de Streamlit correctamente proporcional
+st.markdown(
+    f"""
     <style>
     #MainMenu {{visibility: hidden;}}
     header {{visibility: hidden;}}
@@ -33,17 +36,16 @@ st.markdown(f"""
     .stApp {{
         {bg_style}
         background-size: cover !important;
-        background-position: center bottom !important;
+        background-position: center center !important;
         background-repeat: no-repeat !important;
         background-attachment: fixed !important;
     }}
 
-    /* Ajuste responsivo para celulares verticales: No recortar fondo */
-    @media (max-width: 600px) {{
+    /* Ajuste para dispositivos móviles para evitar distorsión o estiramiento excesivo */
+    @media (max-width: 768px) {{
         .stApp {{
-            background-size: contain !important;
-            background-position: bottom center !important;
-            background-color: #0284c7 !important;
+            background-size: cover !important;
+            background-position: center center !important;
         }}
     }}
 
@@ -60,7 +62,9 @@ st.markdown(f"""
         min-height: 100vh !important;
     }}
     </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
 html_code = """
 <!DOCTYPE html>
