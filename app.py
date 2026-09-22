@@ -27,20 +27,23 @@ st.markdown(f"""
     
     .stApp {{
         {bg_style}
-        background-size: 100% 100% !important;
+        background-size: cover !important;
         background-position: center center !important;
         background-repeat: no-repeat !important;
         background-attachment: fixed !important;
     }}
 
+    /* Ajustes para eliminar espacios en blanco en móviles */
     .block-container {{
         padding: 0rem !important;
         max-width: 100% !important;
     }}
     
+    /* Forzar al iframe a ocupar el alto útil completo */
     iframe {{
         border: none !important;
         width: 100% !important;
+        height: 100vh !important;
     }}
     </style>
 """, unsafe_allow_html=True)
@@ -50,7 +53,7 @@ html_code = """
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
@@ -66,22 +69,24 @@ html_code = """
       align-items: center;
       padding: 10px;
       color: #1e293b;
-      overflow: hidden;
+      overflow-x: hidden;
+      overflow-y: auto;
     }
 
     .card {
       background: rgba(255, 255, 255, 0.95);
       border: 2px solid rgba(255, 255, 255, 0.9);
       border-radius: 28px;
-      padding: 20px 22px;
+      padding: 20px 18px;
       max-width: 480px;
       width: 100%;
       text-align: center;
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+      margin: auto;
     }
 
     h1 {
-      font-size: 22px;
+      font-size: clamp(18px, 5vw, 22px);
       font-weight: 800;
       color: #0f172a;
       background: linear-gradient(135deg, #0284c7 0%, #e11d48 50%, #d97706 100%);
@@ -92,8 +97,8 @@ html_code = """
 
     .ruleta-container {
       position: relative;
-      width: 340px;
-      height: 340px;
+      width: min(320px, 80vw);
+      height: min(320px, 80vw);
       margin: 5px auto 15px;
       display: flex;
       justify-content: center;
@@ -131,19 +136,21 @@ html_code = """
       border-radius: 50%;
       border: 5px solid #ffffff;
       box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+      width: 90% !important;
+      height: 90% !important;
     }
 
     .ruleta-centro {
       position: absolute;
-      width: 60px;
-      height: 60px;
+      width: 20%;
+      height: 20%;
       background: radial-gradient(circle, #fef08a 0%, #f59e0b 100%);
-      border: 4px solid #ffffff;
+      border: 3px solid #ffffff;
       border-radius: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 26px;
+      font-size: 20px;
       z-index: 20;
       box-shadow: 0 3px 12px rgba(0,0,0,0.25);
     }
@@ -159,13 +166,15 @@ html_code = """
       cursor: pointer;
       box-shadow: 0 8px 18px -3px rgba(2, 132, 199, 0.5);
       transition: all 0.3s ease;
+      width: 100%;
+      max-width: 280px;
     }
 
     .btn-girar:hover, .btn-girar:active {
       background: linear-gradient(135deg, #ffe066 0%, #f59e0b 50%, #d97706 100%);
       color: #0f172a;
       border-color: #fef08a;
-      transform: translateY(-2px) scale(1.05);
+      transform: translateY(-2px) scale(1.02);
       box-shadow: 0 0 25px rgba(245, 158, 11, 0.9), 0 10px 20px -3px rgba(217, 119, 6, 0.6);
     }
 
@@ -199,7 +208,7 @@ html_code = """
       background: #ffffff;
       color: #1e293b;
       border: 1.5px solid #cbd5e1;
-      padding: 10px 14px;
+      padding: 12px 14px;
       font-size: 13px;
       font-weight: 600;
       font-family: inherit;
@@ -207,13 +216,13 @@ html_code = """
       cursor: pointer;
       text-align: left;
       transition: all 0.2s ease;
+      min-height: 44px;
     }
 
-    .opciones button:hover {
+    .opciones button:hover, .opciones button:active {
       background: #0284c7;
       color: #ffffff;
       border-color: #0284c7;
-      transform: translateX(3px);
     }
 
     .overlay {
@@ -226,8 +235,8 @@ html_code = """
       z-index: 9999;
     }
 
-    .overlay.acierto { background: #00c853 !important; }
-    .overlay.error { background: #d50000 !important; }
+    .overlay.acierto { background: rgba(0, 200, 83, 0.95) !important; }
+    .overlay.error { background: rgba(213, 0, 0, 0.95) !important; }
 
     .overlay-card {
       background: #ffffff !important;
@@ -298,7 +307,7 @@ html_code = """
     <div class="overlay-card">
       <div class="overlay-emoji">🥳</div>
       <div class="overlay-titulo">¡EXCELENTE!<br>Respuesta Correcta</div>
-      <button class="btn-continuar" onclick="cerrarOverlay('overlayAcierto')">Continuar </button>
+      <button class="btn-continuar" onclick="cerrarOverlay('overlayAcierto')">Continuar</button>
     </div>
   </div>
 
@@ -306,7 +315,7 @@ html_code = """
     <div class="overlay-card">
       <div class="overlay-emoji">😓❌</div>
       <div class="overlay-titulo">¡INCORRECTO!<br>Inténtalo de Nuevo</div>
-      <button class="btn-continuar" onclick="cerrarOverlay('overlayError')">Reintentar </button>
+      <button class="btn-continuar" onclick="cerrarOverlay('overlayError')">Reintentar</button>
     </div>
   </div>
 
@@ -482,12 +491,11 @@ html_code = """
           osc.stop(audioCtx.currentTime + idx * 0.09 + 0.35);
         });
       } else {
-        // Sonido de error potenciar (Sawtooth + mayor ganancia + 2 tonos bien marcados)
-        const notasError = [220, 155]; // Tono medio-grave y luego grave desfase
+        const notasError = [220, 155];
         notasError.forEach((freq, idx) => {
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
-          osc.type = 'sawtooth'; // Onda más crujiente y audible
+          osc.type = 'sawtooth';
           osc.frequency.value = freq;
           
           gain.gain.setValueAtTime(0.55, audioCtx.currentTime + idx * 0.28);
@@ -589,4 +597,5 @@ html_code = """
 </html>
 """
 
-st.components.v1.html(html_code, height=820, scrolling=True)
+# Se cambia scrolling a False y se le da alto dinámico de pantalla completa
+st.components.v1.html(html_code, height=750, scrolling=False)
