@@ -1,33 +1,25 @@
-import base64
 import streamlit as st
+import base64
 
 st.set_page_config(
-    page_title="Ruleta Zona Metropolitana del Atlántico",
-    page_icon="🎡",
+    page_title="Ruleta Área Metropolitana del Atlántico", 
+    page_icon="🎡", 
     layout="wide",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="collapsed"
 )
-
 
 # Convertir la imagen local a base64 para cargarla directamente en el CSS
 def get_base64_image(image_path):
-    try:
-        with open(image_path, "rb") as img_file:
-            return base64.b64encode(img_file.read()).decode()
-    except Exception:
-        return None
+    with open(image_path, "rb") as img_file:
+        return base64.b64encode(img_file.read()).decode()
 
-
-img_base64 = get_base64_image("fondo.png")
-
-if img_base64:
+try:
+    img_base64 = get_base64_image("fondo.png")
     bg_style = f"background-image: url('data:image/png;base64,{img_base64}');"
-else:
+except Exception:
     bg_style = "background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);"
 
-# Ocultar la barra superior, pie de página y ajustar fondo de Streamlit correctamente proporcional
-st.markdown(
-    f"""
+st.markdown(f"""
     <style>
     #MainMenu {{visibility: hidden;}}
     header {{visibility: hidden;}}
@@ -35,94 +27,74 @@ st.markdown(
     
     .stApp {{
         {bg_style}
-        background-size: cover !important;
+        background-size: 100% 100% !important;
         background-position: center center !important;
         background-repeat: no-repeat !important;
         background-attachment: fixed !important;
     }}
 
-    /* Ajuste para dispositivos móviles para evitar distorsión o estiramiento excesivo */
-    @media (max-width: 768px) {{
-        .stApp {{
-            background-size: cover !important;
-            background-position: center center !important;
-        }}
-    }}
-
-    /* Eliminar paddings de Streamlit */
     .block-container {{
         padding: 0rem !important;
         max-width: 100% !important;
     }}
     
-    /* Adaptar el Iframe al 100% */
     iframe {{
         border: none !important;
         width: 100% !important;
-        min-height: 100vh !important;
     }}
     </style>
-""",
-    unsafe_allow_html=True,
-)
+""", unsafe_allow_html=True)
 
 html_code = """
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html, body {
-      width: 100%;
-      min-height: 100vh;
+    body {
       font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
       background: transparent;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
-      padding: 10px 10px 30px 10px;
+      align-items: center;
+      padding: 10px;
       color: #1e293b;
-      overflow-x: hidden;
-      overflow-y: auto;
+      overflow: hidden;
     }
 
-    /* Tarjeta Adaptable para Celular (Vertical) y Portátil */
     .card {
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      background: rgba(255, 255, 255, 0.95);
       border: 2px solid rgba(255, 255, 255, 0.9);
-      border-radius: 20px;
-      padding: 16px 14px;
-      max-width: 460px;
+      border-radius: 28px;
+      padding: 20px 22px;
+      max-width: 480px;
       width: 100%;
       text-align: center;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-      margin: 5px auto 20px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
     }
 
     h1 {
-      font-size: clamp(16px, 4.5vw, 20px);
+      font-size: 22px;
       font-weight: 800;
       color: #0f172a;
       background: linear-gradient(135deg, #0284c7 0%, #e11d48 50%, #d97706 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 8px;
+      margin-bottom: 12px;
     }
 
-    /* Ruleta compacta para encajar verticalmente en celular */
     .ruleta-container {
       position: relative;
-      width: min(250px, 65vw);
-      height: min(250px, 65vw);
-      margin: 8px auto 12px;
+      width: 340px;
+      height: 340px;
+      margin: 5px auto 15px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -134,7 +106,7 @@ html_code = """
       height: 100%;
       border-radius: 50%;
       background: linear-gradient(145deg, #fbbf24, #d97706, #fbbf24);
-      box-shadow: 0 0 15px rgba(245, 158, 11, 0.6), inset 0 2px 5px rgba(255,255,255,0.8);
+      box-shadow: 0 0 25px rgba(245, 158, 11, 0.8), inset 0 2px 6px rgba(255,255,255,0.8);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -142,114 +114,108 @@ html_code = """
 
     .flecha {
       position: absolute;
-      top: -12px;
+      top: -16px;
       left: 50%;
       transform: translateX(-50%);
       width: 0;
       height: 0;
-      border-left: 14px solid transparent;
-      border-right: 14px solid transparent;
-      border-top: 24px solid #ff0033;
+      border-left: 18px solid transparent;
+      border-right: 18px solid transparent;
+      border-top: 32px solid #ff0033;
       z-index: 30;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+      filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));
       transition: transform 0.05s ease-out;
     }
 
     #canvasRuleta {
       border-radius: 50%;
-      border: 3px solid #ffffff;
-      box-shadow: inset 0 0 8px rgba(0,0,0,0.3);
-      width: 90% !important;
-      height: 90% !important;
+      border: 5px solid #ffffff;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
     }
 
     .ruleta-centro {
       position: absolute;
-      width: 20%;
-      height: 20%;
+      width: 60px;
+      height: 60px;
       background: radial-gradient(circle, #fef08a 0%, #f59e0b 100%);
-      border: 2px solid #ffffff;
+      border: 4px solid #ffffff;
       border-radius: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: clamp(14px, 3.5vw, 18px);
+      font-size: 26px;
       z-index: 20;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+      box-shadow: 0 3px 12px rgba(0,0,0,0.25);
     }
 
     .btn-girar {
       background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
       color: #ffffff;
       border: 2px solid transparent;
-      padding: 10px 24px;
-      font-size: clamp(13px, 3.5vw, 15px);
+      padding: 12px 32px;
+      font-size: 16px;
       font-weight: 800;
       border-radius: 50px;
       cursor: pointer;
-      box-shadow: 0 6px 14px -2px rgba(2, 132, 199, 0.5);
-      transition: all 0.2s ease;
-      width: 100%;
-      max-width: 240px;
-      margin: 4px auto;
+      box-shadow: 0 8px 18px -3px rgba(2, 132, 199, 0.5);
+      transition: all 0.3s ease;
     }
 
     .btn-girar:hover, .btn-girar:active {
       background: linear-gradient(135deg, #ffe066 0%, #f59e0b 50%, #d97706 100%);
       color: #0f172a;
       border-color: #fef08a;
-      transform: translateY(-2px) scale(1.02);
-      box-shadow: 0 0 16px rgba(245, 158, 11, 0.8);
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 0 25px rgba(245, 158, 11, 0.9), 0 10px 20px -3px rgba(217, 119, 6, 0.6);
     }
 
     #juego {
-      margin-top: 12px;
-      animation: fadeInUp 0.3s ease-out;
+      margin-top: 15px;
+      animation: fadeInUp 0.4s ease-out;
     }
 
     .pregunta-box {
       background: rgba(241, 245, 249, 0.95);
       border: 1px solid rgba(203, 213, 225, 0.8);
-      border-radius: 12px;
-      padding: 10px;
-      margin-bottom: 10px;
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 12px;
     }
 
     .pregunta-titulo {
-      font-size: clamp(12px, 3.2vw, 14px);
+      font-size: 14px;
       font-weight: 700;
       color: #0f172a;
-      line-height: 1.35;
+      line-height: 1.4;
     }
 
     .opciones {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
     }
 
     .opciones button {
       background: #ffffff;
       color: #1e293b;
       border: 1.5px solid #cbd5e1;
-      padding: 9px 10px;
-      font-size: clamp(11px, 2.8vw, 12.5px);
+      padding: 10px 14px;
+      font-size: 13px;
       font-weight: 600;
       font-family: inherit;
-      border-radius: 10px;
+      border-radius: 12px;
       cursor: pointer;
       text-align: left;
       transition: all 0.2s ease;
-      min-height: 38px;
     }
 
-    .opciones button:hover, .opciones button:active {
+    .opciones button:hover {
       background: #0284c7;
       color: #ffffff;
       border-color: #0284c7;
+      transform: translateX(3px);
     }
 
-    /* Modal / Overlay full-screen */
     .overlay {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
@@ -258,57 +224,56 @@ html_code = """
       justify-content: center;
       align-items: center;
       z-index: 9999;
-      padding: 15px;
     }
 
-    .overlay.acierto { background: rgba(0, 200, 83, 0.95) !important; }
-    .overlay.error { background: rgba(213, 0, 0, 0.95) !important; }
+    .overlay.acierto { background: #00c853 !important; }
+    .overlay.error { background: #d50000 !important; }
 
     .overlay-card {
       background: #ffffff !important;
-      border-radius: 18px;
-      padding: 20px;
+      border-radius: 24px;
+      padding: 28px;
       text-align: center;
-      max-width: 300px;
-      width: 88%;
-      box-shadow: 0 15px 30px rgba(0,0,0,0.35);
+      max-width: 320px;
+      width: 90%;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
     }
 
-    .overlay-emoji { font-size: 45px; margin-bottom: 6px; }
+    .overlay-emoji { font-size: 60px; margin-bottom: 8px; }
 
     .overlay-titulo {
-      font-size: 16px;
+      font-size: 20px;
       font-weight: 800;
       color: #0f172a;
-      margin-bottom: 12px;
+      margin-bottom: 15px;
     }
 
     .btn-continuar {
       background: #0f172a;
       color: #ffffff;
       border: none;
-      padding: 9px 22px;
-      font-size: 13px;
+      padding: 12px 28px;
+      font-size: 14px;
       font-weight: 800;
       border-radius: 50px;
       cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
     .oculto { display: none !important; }
 
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
 <body>
 
   <div class="card">
-    <h1>🎡 Zona Metropolitana del Atlántico</h1>
+    <h1>🎡 Área Metropolitana del Atlántico</h1>
     
     <div class="ruleta-container">
       <div class="ruleta-outer-ring">
         <div class="flecha" id="flechaIndicador"></div>
-        <canvas id="canvasRuleta" width="280" height="280"></canvas>
+        <canvas id="canvasRuleta" width="310" height="310"></canvas>
         <div class="ruleta-centro">⭐</div>
       </div>
     </div>
@@ -333,15 +298,15 @@ html_code = """
     <div class="overlay-card">
       <div class="overlay-emoji">🥳</div>
       <div class="overlay-titulo">¡EXCELENTE!<br>Respuesta Correcta</div>
-      <button class="btn-continuar" onclick="cerrarOverlay('overlayAcierto')">Continuar</button>
+      <button class="btn-continuar" onclick="cerrarOverlay('overlayAcierto')">Continuar ➡️</button>
     </div>
   </div>
 
   <div id="overlayError" class="overlay error">
     <div class="overlay-card">
-      <div class="overlay-emoji">😓❌</div>
+      <div class="overlay-emoji">❌</div>
       <div class="overlay-titulo">¡INCORRECTO!<br>Inténtalo de Nuevo</div>
-      <button class="btn-continuar" onclick="cerrarOverlay('overlayError')">Reintentar</button>
+      <button class="btn-continuar" onclick="cerrarOverlay('overlayError')">Reintentar 🔄</button>
     </div>
   </div>
 
@@ -350,14 +315,14 @@ html_code = """
       {
         titulo: "2do MÁS POBLADO",
         color: "#ff0033",
-        pregunta: "1. ¿Cuál es el segundo municipio más poblado?",
+        pregunta: "1. ¿Cuál es el segundo municipio más poblado (153.223 hab)?",
         A: "Malambo", B: "Galapa", C: "Puerto Colombia", D: "Barranquilla",
         correcta: "A"
       },
       {
         titulo: "MAYOR POBLACIÓN",
         color: "#0066ff",
-        pregunta: "2. ¿Qué municipio concentra la mayor población?",
+        pregunta: "2. ¿Qué municipio concentra la mayor población (1.275.854 hab)?",
         A: "Galapa", B: "Barranquilla", C: "Malambo", D: "Puerto Colombia",
         correcta: "B"
       },
@@ -369,7 +334,7 @@ html_code = """
         B: "Barranquilla > Malambo > Puerto Colombia > Galapa",
         C: "Malambo > Barranquilla > Galapa > Puerto Colombia",
         D: "Puerto Colombia > Galapa > Malambo > Barranquilla",
-        correcta: "A"
+        correcta: "B"
       },
       {
         titulo: "POBLACIÓN TOTAL",
@@ -381,8 +346,8 @@ html_code = """
       {
         titulo: "% BARRANQUILLA",
         color: "#8800ff",
-        pregunta: "5. ¿Qué porcentaje de la población total representa Barranquilla?",
-        A: "72,2%", B: "81,5%", C: "35,8%", D: "90,1%",
+        pregunta: "5. ¿Qué porcentaje de la población total del Atlántico representa Barranquilla?",
+        A: "50,0%", B: "44,2%", C: "35,8%", D: "60,1%",
         correcta: "B"
       },
       {
@@ -432,8 +397,8 @@ html_code = """
         ctx.rotate(anguloInicio + anguloArc / 2);
         ctx.textAlign = "right";
         ctx.fillStyle = "#ffffff";
-        ctx.font = "800 9px Poppins, sans-serif";
-        ctx.fillText(sectores[i].titulo, radio - 12, 3);
+        ctx.font = "800 9.5px Poppins, sans-serif";
+        ctx.fillText(sectores[i].titulo, radio - 14, 3.5);
         ctx.restore();
       }
     }
@@ -444,7 +409,7 @@ html_code = """
     let anguloActualRad = 0;
     let girando = false;
 
-    // Motor de Audio
+    // Motor de audio
     let audioCtx = null;
 
     function initAudio() {
@@ -517,11 +482,12 @@ html_code = """
           osc.stop(audioCtx.currentTime + idx * 0.09 + 0.35);
         });
       } else {
-        const notasError = [220, 155];
+        // Sonido de error potenciar (Sawtooth + mayor ganancia + 2 tonos bien marcados)
+        const notasError = [220, 155]; // Tono medio-grave y luego grave desfase
         notasError.forEach((freq, idx) => {
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
-          osc.type = 'sawtooth';
+          osc.type = 'sawtooth'; // Onda más crujiente y audible
           osc.frequency.value = freq;
           
           gain.gain.setValueAtTime(0.55, audioCtx.currentTime + idx * 0.28);
@@ -599,8 +565,6 @@ html_code = """
       document.getElementById('opcionB').textContent = `B) ${sectorSeleccionado.B}`;
       document.getElementById('opcionC').textContent = `C) ${sectorSeleccionado.C}`;
       document.getElementById('opcionD').textContent = `D) ${sectorSeleccionado.D}`;
-      
-      document.getElementById('juego').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
     function verificarRespuesta(opcion) {
@@ -625,4 +589,4 @@ html_code = """
 </html>
 """
 
-st.components.v1.html(html_code, height=950, scrolling=True)
+st.components.v1.html(html_code, height=820, scrolling=True)
