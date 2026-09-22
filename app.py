@@ -1,25 +1,32 @@
-import streamlit as st
 import base64
+import streamlit as st
 
 st.set_page_config(
-    page_title="Ruleta Área Metropolitana del Atlántico", 
-    page_icon="🎡", 
+    page_title="Ruleta Área Metropolitana del Atlántico",
+    page_icon="🎡",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="collapsed",
 )
+
 
 # Convertir la imagen local a base64 para cargarla directamente en el CSS
 def get_base64_image(image_path):
-    with open(image_path, "rb") as img_file:
-        return base64.b64encode(img_file.read()).decode()
+    try:
+        with open(image_path, "rb") as img_file:
+            return base64.b64encode(img_file.read()).decode()
+    except Exception:
+        return None
 
-try:
-    img_base64 = get_base64_image("fondo.png")
+
+img_base64 = get_base64_image("fondo.png")
+
+if img_base64:
     bg_style = f"background-image: url('data:image/png;base64,{img_base64}');"
-except Exception:
+else:
     bg_style = "background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);"
 
-st.markdown(f"""
+st.markdown(
+    f"""
     <style>
     #MainMenu {{visibility: hidden;}}
     header {{visibility: hidden;}}
@@ -27,7 +34,7 @@ st.markdown(f"""
     
     .stApp {{
         {bg_style}
-        background-size: 100% 100% !important;
+        background-size: cover !important;
         background-position: center center !important;
         background-repeat: no-repeat !important;
         background-attachment: fixed !important;
@@ -41,9 +48,12 @@ st.markdown(f"""
     iframe {{
         border: none !important;
         width: 100% !important;
+        min-height: 100vh !important;
     }}
     </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
 html_code = """
 <!DOCTYPE html>
@@ -57,16 +67,18 @@ html_code = """
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-      font-family: 'Poppins', sans-serif;
+    html, body {
+      width: 100%;
       min-height: 100vh;
+      font-family: 'Poppins', sans-serif;
       background: transparent;
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
       padding: 10px;
       color: #1e293b;
-      overflow: hidden;
+      overflow-x: hidden;
+      overflow-y: auto;
     }
 
     .card {
@@ -78,10 +90,11 @@ html_code = """
       width: 100%;
       text-align: center;
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+      margin-bottom: 20px;
     }
 
     h1 {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 800;
       color: #0f172a;
       background: linear-gradient(135deg, #0284c7 0%, #e11d48 50%, #d97706 100%);
@@ -216,18 +229,21 @@ html_code = """
       transform: translateX(3px);
     }
 
+    /* Pantalla completa para los resultados */
     .overlay {
       position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
+      top: 0; left: 0; 
+      width: 100vw; height: 100vh;
       display: none;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      z-index: 9999;
+      z-index: 99999;
+      padding: 15px;
     }
 
-    .overlay.acierto { background: #00c853 !important; }
-    .overlay.error { background: #d50000 !important; }
+    .overlay.acierto { background: rgba(0, 200, 83, 0.96) !important; }
+    .overlay.error { background: rgba(213, 0, 0, 0.96) !important; }
 
     .overlay-card {
       background: #ffffff !important;
@@ -273,7 +289,7 @@ html_code = """
     <div class="ruleta-container">
       <div class="ruleta-outer-ring">
         <div class="flecha" id="flechaIndicador"></div>
-        <canvas id="canvasRuleta" width="310" height="310"></canvas>
+        <canvas id="canvasRuleta" width="340" height="340"></canvas>
         <div class="ruleta-centro">⭐</div>
       </div>
     </div>
@@ -304,7 +320,7 @@ html_code = """
 
   <div id="overlayError" class="overlay error">
     <div class="overlay-card">
-      <div class="overlay-emoji">❌</div>
+      <div class="overlay-emoji">😓❌</div>
       <div class="overlay-titulo">¡INCORRECTO!<br>Inténtalo de Nuevo</div>
       <button class="btn-continuar" onclick="cerrarOverlay('overlayError')">Reintentar 🔄</button>
     </div>
@@ -315,14 +331,14 @@ html_code = """
       {
         titulo: "2do MÁS POBLADO",
         color: "#ff0033",
-        pregunta: "1. ¿Cuál es el segundo municipio más poblado (153.223 hab)?",
+        pregunta: "1. ¿Cuál es el segundo municipio más poblado?",
         A: "Malambo", B: "Galapa", C: "Puerto Colombia", D: "Barranquilla",
         correcta: "A"
       },
       {
         titulo: "MAYOR POBLACIÓN",
         color: "#0066ff",
-        pregunta: "2. ¿Qué municipio concentra la mayor población (1.275.854 hab)?",
+        pregunta: "2. ¿Qué municipio concentra la mayor población?",
         A: "Galapa", B: "Barranquilla", C: "Malambo", D: "Puerto Colombia",
         correcta: "B"
       },
@@ -334,7 +350,7 @@ html_code = """
         B: "Barranquilla > Malambo > Puerto Colombia > Galapa",
         C: "Malambo > Barranquilla > Galapa > Puerto Colombia",
         D: "Puerto Colombia > Galapa > Malambo > Barranquilla",
-        correcta: "B"
+        correcta: "A"
       },
       {
         titulo: "POBLACIÓN TOTAL",
@@ -346,8 +362,8 @@ html_code = """
       {
         titulo: "% BARRANQUILLA",
         color: "#8800ff",
-        pregunta: "5. ¿Qué porcentaje de la población total del Atlántico representa Barranquilla?",
-        A: "50,0%", B: "44,2%", C: "35,8%", D: "60,1%",
+        pregunta: "5. ¿Qué porcentaje de la población total representa Barranquilla?",
+        A: "72,2%", B: "81,5%", C: "35,8%", D: "90,1%",
         correcta: "B"
       },
       {
@@ -397,8 +413,8 @@ html_code = """
         ctx.rotate(anguloInicio + anguloArc / 2);
         ctx.textAlign = "right";
         ctx.fillStyle = "#ffffff";
-        ctx.font = "800 9.5px Poppins, sans-serif";
-        ctx.fillText(sectores[i].titulo, radio - 14, 3.5);
+        ctx.font = "800 11px Poppins, sans-serif";
+        ctx.fillText(sectores[i].titulo, radio - 14, 4);
         ctx.restore();
       }
     }
@@ -482,12 +498,11 @@ html_code = """
           osc.stop(audioCtx.currentTime + idx * 0.09 + 0.35);
         });
       } else {
-        // Sonido de error potenciar (Sawtooth + mayor ganancia + 2 tonos bien marcados)
-        const notasError = [220, 155]; // Tono medio-grave y luego grave desfase
+        const notasError = [220, 155];
         notasError.forEach((freq, idx) => {
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
-          osc.type = 'sawtooth'; // Onda más crujiente y audible
+          osc.type = 'sawtooth';
           osc.frequency.value = freq;
           
           gain.gain.setValueAtTime(0.55, audioCtx.currentTime + idx * 0.28);
@@ -565,6 +580,8 @@ html_code = """
       document.getElementById('opcionB').textContent = `B) ${sectorSeleccionado.B}`;
       document.getElementById('opcionC').textContent = `C) ${sectorSeleccionado.C}`;
       document.getElementById('opcionD').textContent = `D) ${sectorSeleccionado.D}`;
+      
+      document.getElementById('juego').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
     function verificarRespuesta(opcion) {
@@ -589,4 +606,4 @@ html_code = """
 </html>
 """
 
-st.components.v1.html(html_code, height=820, scrolling=True)
+st.components.v1.html(html_code, height=900, scrolling=True)
