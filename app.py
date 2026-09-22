@@ -2,7 +2,7 @@ import streamlit as st
 import base64
 
 st.set_page_config(
-    page_title="Ruleta Área Metropolitana del Atlántico", 
+    page_title="Ruleta Zona Metropolitana del Atlántico", 
     page_icon="🎡", 
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -268,7 +268,7 @@ html_code = """
 <body>
 
   <div class="card">
-    <h1>🎡 Área Metropolitana del Atlántico</h1>
+    <h1>🎡 Zona Metropolitana del Atlántico</h1>
     
     <div class="ruleta-container">
       <div class="ruleta-outer-ring">
