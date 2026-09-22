@@ -69,7 +69,6 @@ html_code = """
       overflow: hidden;
     }
 
-    /* Tarjeta Principal Tamaño Compacto */
     .card {
       background: rgba(255, 255, 255, 0.95);
       border: 2px solid rgba(255, 255, 255, 0.9);
@@ -91,7 +90,6 @@ html_code = """
       margin-bottom: 12px;
     }
 
-    /* Ruleta de 340px */
     .ruleta-container {
       position: relative;
       width: 340px;
@@ -126,13 +124,13 @@ html_code = """
       border-top: 32px solid #ff0033;
       z-index: 30;
       filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));
+      transition: transform 0.05s ease-out;
     }
 
     #canvasRuleta {
       border-radius: 50%;
       border: 5px solid #ffffff;
       box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
-      transition: transform 4s cubic-bezier(0.15, 0.85, 0.15, 1);
     }
 
     .ruleta-centro {
@@ -150,7 +148,6 @@ html_code = """
       box-shadow: 0 3px 12px rgba(0,0,0,0.25);
     }
 
-    /* Botón de Girar Ruleta */
     .btn-girar {
       background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
       color: #ffffff;
@@ -219,7 +216,6 @@ html_code = """
       transform: translateX(3px);
     }
 
-    /* Pantallas completas opacas */
     .overlay {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
@@ -230,13 +226,8 @@ html_code = """
       z-index: 9999;
     }
 
-    .overlay.acierto { 
-      background: #00c853 !important; 
-    }
-
-    .overlay.error { 
-      background: #d50000 !important; 
-    }
+    .overlay.acierto { background: #00c853 !important; }
+    .overlay.error { background: #d50000 !important; }
 
     .overlay-card {
       background: #ffffff !important;
@@ -276,15 +267,16 @@ html_code = """
 </head>
 <body>
 
-  <!-- Sonido de ruleta tipo carrusel/click continuo suave -->
-  <audio id="soundSpin" src="https://assets.mixkit.co/active_storage/sfx/1468/1468-preview.mp3" preload="auto"></audio>
+  <!-- Audios de Clic HD y Fin de Giro -->
+  <audio id="soundClick" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" preload="auto"></audio>
+  <audio id="soundFinish" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3" preload="auto"></audio>
 
   <div class="card">
     <h1>🎡 Área Metropolitana del Atlántico</h1>
     
     <div class="ruleta-container">
       <div class="ruleta-outer-ring">
-        <div class="flecha"></div>
+        <div class="flecha" id="flechaIndicador"></div>
         <canvas id="canvasRuleta" width="310" height="310"></canvas>
         <div class="ruleta-centro">⭐</div>
       </div>
@@ -418,9 +410,28 @@ html_code = """
     dibujarRuleta();
 
     let sectorSeleccionado = {};
-    let anguloActual = 0;
+    let anguloActualRad = 0;
+    let girando = false;
 
-    function reproducirSonido(tipo) {
+    const audioClick = document.getElementById('soundClick');
+    const audioFinish = document.getElementById('soundFinish');
+
+    function tocarClic() {
+      if (audioClick) {
+        const clone = audioClick.cloneNode();
+        clone.volume = 0.6;
+        clone.play().catch(e => {});
+      }
+      
+      // Animación sutil de rebote en la flecha roja
+      const flecha = document.getElementById('flechaIndicador');
+      flecha.style.transform = 'translateX(-50%) scale(1.2)';
+      setTimeout(() => {
+        flecha.style.transform = 'translateX(-50%) scale(1)';
+      }, 50);
+    }
+
+    function reproducirSonidoResultados(tipo) {
       const ctxAudio = new (window.AudioContext || window.webkitAudioContext)();
       if (tipo === 'acierto') {
         const notas = [523.25, 659.25, 783.99, 1046.50];
@@ -451,31 +462,62 @@ html_code = """
     }
 
     function girarRuleta() {
+      if (girando) return;
+      girando = true;
       document.getElementById('juego').classList.add('oculto');
-      
-      const audioSpin = document.getElementById('soundSpin');
-      if (audioSpin) {
-        audioSpin.currentTime = 0;
-        audioSpin.play().catch(e => console.log(e));
-      }
+      document.getElementById('btnGirar').disabled = true;
 
-      const girosExtra = Math.floor(Math.random() * 5) + 6;
       const indiceAleatorio = Math.floor(Math.random() * numSectores);
-      
       sectorSeleccionado = sectores[indiceAleatorio];
 
+      // Ángulo de destino preciso
       const anguloSectorDeg = 360 / numSectores;
-      const anguloMeta = 270 - (indiceAleatorio * anguloSectorDeg) - (anguloSectorDeg / 2);
+      const anguloMetaDeg = 270 - (indiceAleatorio * anguloSectorDeg) - (anguloSectorDeg / 2);
+      const girosCompletos = (Math.floor(Math.random() * 4) + 5) * 360;
       
-      anguloActual += (girosExtra * 360) + (anguloMeta - (anguloActual % 360));
-      canvas.style.transform = `rotate(${anguloActual}deg)`;
+      const anguloFinalDeg = girosCompletos + anguloMetaDeg;
+      const anguloFinalRad = (anguloFinalDeg * Math.PI) / 180;
 
-      setTimeout(() => {
-        if (audioSpin) {
-          audioSpin.pause();
+      const duracionMs = 4200;
+      const inicioTiempo = performance.now();
+      const anguloInicialRad = anguloActualRad;
+      const deltaAnguloRad = anguloFinalRad - (anguloInicialRad % (2 * Math.PI));
+
+      let ultimoSectorIndex = -1;
+
+      function animar(tiempoActual) {
+        const transcurrido = tiempoActual - inicioTiempo;
+        let progreso = transcurrido / duracionMs;
+        if (progreso > 1) progreso = 1;
+
+        // Curva de desaceleración suave (easeOutCubic)
+        const factorCurva = 1 - Math.pow(1 - progreso, 3);
+        anguloActualRad = anguloInicialRad + deltaAnguloRad * factorCurva;
+
+        // Renderizar rotación en el canvas
+        canvas.style.transform = `rotate(${anguloActualRad}rad)`;
+
+        // Detectar cada vez que la flecha cruza una división entre sectores
+        const anguloNormalizado = (3 * Math.PI / 2 - anguloActualRad) % (2 * Math.PI);
+        const anguloPositivo = anguloNormalizado < 0 ? anguloNormalizado + 2 * Math.PI : anguloNormalizado;
+        const sectorActualIndex = Math.floor(anguloPositivo / anguloArc);
+
+        if (sectorActualIndex !== ultimoSectorIndex) {
+          tocarClic();
+          ultimoSectorIndex = sectorActualIndex;
         }
-        mostrarPregunta();
-      }, 4000);
+
+        if (progreso < 1) {
+          requestAnimationFrame(animar);
+        } else {
+          girando = false;
+          document.getElementById('btnGirar').disabled = false;
+          if (audioFinish) audioFinish.play().catch(e => {});
+          mostrarPregunta();
+        }
+      }
+
+      requestAnimationFrame(animar);
     }
 
     function mostrarPregunta() {
@@ -489,11 +531,11 @@ html_code = """
 
     function verificarRespuesta(opcion) {
       if (opcion === sectorSeleccionado.correcta) {
-        reproducirSonido('acierto');
+        reproducirSonidoResultados('acierto');
         confetti({ particleCount: 130, spread: 80, origin: { y: 0.6 } });
         document.getElementById('overlayAcierto').style.display = 'flex';
       } else {
-        reproducirSonido('error');
+        reproducirSonidoResultados('error');
         document.getElementById('overlayError').style.display = 'flex';
       }
     }
