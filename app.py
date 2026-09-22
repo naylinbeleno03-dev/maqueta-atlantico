@@ -27,7 +27,7 @@ st.markdown(f"""
     
     .stApp {{
         {bg_style}
-        background-size: 100% 100% !important; /* Ajusta la imagen completa a la pantalla sin recortar */
+        background-size: 100% 100% !important;
         background-position: center center !important;
         background-repeat: no-repeat !important;
         background-attachment: fixed !important;
@@ -108,8 +108,8 @@ html_code = """
       width: 100%;
       height: 100%;
       border-radius: 50%;
-      background: linear-gradient(145deg, #f59e0b, #b45309, #f59e0b);
-      box-shadow: 0 0 20px rgba(245, 158, 11, 0.5), inset 0 2px 6px rgba(255,255,255,0.8);
+      background: linear-gradient(145deg, #fbbf24, #d97706, #fbbf24);
+      box-shadow: 0 0 25px rgba(245, 158, 11, 0.8), inset 0 2px 6px rgba(255,255,255,0.8);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -124,9 +124,9 @@ html_code = """
       height: 0;
       border-left: 15px solid transparent;
       border-right: 15px solid transparent;
-      border-top: 28px solid #e11d48;
+      border-top: 28px solid #ff0033;
       z-index: 30;
-      filter: drop-shadow(0 3px 6px rgba(0,0,0,0.3));
+      filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));
     }
 
     #canvasRuleta {
@@ -151,22 +151,26 @@ html_code = """
       box-shadow: 0 3px 12px rgba(0,0,0,0.25);
     }
 
+    /* Botón de Girar Ruleta con efecto Dorado al Tocarlo */
     .btn-girar {
       background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
       color: #ffffff;
-      border: none;
+      border: 2px solid transparent;
       padding: 12px 30px;
       font-size: 15px;
       font-weight: 800;
       border-radius: 50px;
       cursor: pointer;
       box-shadow: 0 8px 18px -3px rgba(2, 132, 199, 0.5);
-      transition: all 0.25s ease;
+      transition: all 0.3s ease;
     }
 
-    .btn-girar:hover {
-      transform: translateY(-2px) scale(1.03);
-      box-shadow: 0 10px 20px -3px rgba(2, 132, 199, 0.7);
+    .btn-girar:hover, .btn-girar:active {
+      background: linear-gradient(135deg, #ffe066 0%, #f59e0b 50%, #d97706 100%);
+      color: #0f172a;
+      border-color: #fef08a;
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 0 25px rgba(245, 158, 11, 0.9), 0 10px 20px -3px rgba(217, 119, 6, 0.6);
     }
 
     #juego {
@@ -312,24 +316,25 @@ html_code = """
   </div>
 
   <script>
+    /* Colores ultra vivos y potentes para la ruleta */
     const sectores = [
       {
         titulo: "2do MÁS POBLADO",
-        color: "#dc2626",
+        color: "#ff0033", /* Rojo Neón */
         pregunta: "1. ¿Cuál es el segundo municipio más poblado (153.223 hab)?",
         A: "Malambo", B: "Galapa", C: "Puerto Colombia", D: "Barranquilla",
         correcta: "A"
       },
       {
         titulo: "MAYOR POBLACIÓN",
-        color: "#2563eb",
+        color: "#0066ff", /* Azul Eléctrico */
         pregunta: "2. ¿Qué municipio concentra la mayor población (1.275.854 hab)?",
         A: "Galapa", B: "Barranquilla", C: "Malambo", D: "Puerto Colombia",
         correcta: "B"
       },
       {
         titulo: "ORDENAR POBLACIÓN",
-        color: "#059669",
+        color: "#00cc44", /* Verde Esmeralda Potente */
         pregunta: "3. Ordena los municipios de mayor a menor población:",
         A: "Barranquilla > Malambo > Galapa > Puerto Colombia",
         B: "Barranquilla > Malambo > Puerto Colombia > Galapa",
@@ -339,28 +344,28 @@ html_code = """
       },
       {
         titulo: "POBLACIÓN TOTAL",
-        color: "#d97706",
+        color: "#ff8800", /* Naranja Brillante */
         pregunta: "4. ¿Cuál es la población total de los 4 municipios combinados?",
         A: "1.275.854 habitantes", B: "1.564.805 habitantes", C: "1.850.000 habitantes", D: "2.000.000 habitantes",
         correcta: "B"
       },
       {
         titulo: "% BARRANQUILLA",
-        color: "#7c3aed",
+        color: "#8800ff", /* Violeta Intenso */
         pregunta: "5. ¿Qué porcentaje de la población total del Atlántico representa Barranquilla?",
         A: "50,0%", B: "44,2%", C: "35,8%", D: "60,1%",
         correcta: "B"
       },
       {
         titulo: "RANGO POBLACIÓN",
-        color: "#db2777",
+        color: "#ff0077", /* Magenta Vivo */
         pregunta: "6. ¿Cuál es el rango poblacional (Barranquilla - Puerto Colombia)?",
         A: "1.210.168 habitantes", B: "1.100.000 habitantes", C: "950.000 habitantes", D: "1.275.854 habitantes",
         correcta: "A"
       },
       {
         titulo: "ESCALA MAQUETA",
-        color: "#0891b2",
+        color: "#00bbdd", /* Cian Potente */
         pregunta: "7. ¿Qué representa la escala 1 cm = 50.000 habitantes?",
         A: "Que la maqueta mide 50 cm",
         B: "Que 1 cm de barra física equivale a 50.000 habitantes",
@@ -389,7 +394,7 @@ html_code = """
         ctx.moveTo(centroX, centroY);
         ctx.arc(centroX, centroY, radio, anguloInicio, anguloFin);
         ctx.fill();
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 2.5;
         ctx.strokeStyle = "#ffffff";
         ctx.stroke();
 
@@ -398,7 +403,7 @@ html_code = """
         ctx.rotate(anguloInicio + anguloArc / 2);
         ctx.textAlign = "right";
         ctx.fillStyle = "#ffffff";
-        ctx.font = "bold 9px Poppins, sans-serif";
+        ctx.font = "800 9px Poppins, sans-serif";
         ctx.fillText(sectores[i].titulo, radio - 10, 3);
         ctx.restore();
       }
