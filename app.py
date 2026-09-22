@@ -64,39 +64,39 @@ html_code = """
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 15px;
+      padding: 10px;
       color: #1e293b;
-      overflow-y: auto;
+      overflow: hidden;
     }
 
-    /* Tarjeta Principal Extra Grande */
+    /* Tarjeta Principal Tamaño Compacto Ideal */
     .card {
-      background: rgba(255, 255, 255, 0.96);
-      border: 3px solid rgba(255, 255, 255, 0.9);
-      border-radius: 32px;
-      padding: 25px 30px;
-      max-width: 650px;
+      background: rgba(255, 255, 255, 0.95);
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      border-radius: 28px;
+      padding: 20px 22px;
+      max-width: 480px;
       width: 100%;
       text-align: center;
-      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
     }
 
     h1 {
-      font-size: 26px;
+      font-size: 22px;
       font-weight: 800;
       color: #0f172a;
       background: linear-gradient(135deg, #0284c7 0%, #e11d48 50%, #d97706 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
     }
 
-    /* Contenedor de Ruleta Gigante a 460px */
+    /* Ruleta de 340px */
     .ruleta-container {
       position: relative;
-      width: 460px;
-      height: 460px;
-      margin: 10px auto 20px;
+      width: 340px;
+      height: 340px;
+      margin: 5px auto 15px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -108,7 +108,7 @@ html_code = """
       height: 100%;
       border-radius: 50%;
       background: linear-gradient(145deg, #fbbf24, #d97706, #fbbf24);
-      box-shadow: 0 0 35px rgba(245, 158, 11, 0.8), inset 0 3px 8px rgba(255,255,255,0.9);
+      box-shadow: 0 0 25px rgba(245, 158, 11, 0.8), inset 0 2px 6px rgba(255,255,255,0.8);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -116,38 +116,38 @@ html_code = """
 
     .flecha {
       position: absolute;
-      top: -22px;
+      top: -16px;
       left: 50%;
       transform: translateX(-50%);
       width: 0;
       height: 0;
-      border-left: 22px solid transparent;
-      border-right: 22px solid transparent;
-      border-top: 40px solid #ff0033;
+      border-left: 18px solid transparent;
+      border-right: 18px solid transparent;
+      border-top: 32px solid #ff0033;
       z-index: 30;
-      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+      filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));
     }
 
     #canvasRuleta {
       border-radius: 50%;
-      border: 6px solid #ffffff;
-      box-shadow: inset 0 0 12px rgba(0,0,0,0.3);
+      border: 5px solid #ffffff;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
       transition: transform 4s cubic-bezier(0.15, 0.85, 0.15, 1);
     }
 
     .ruleta-centro {
       position: absolute;
-      width: 75px;
-      height: 75px;
+      width: 60px;
+      height: 60px;
       background: radial-gradient(circle, #fef08a 0%, #f59e0b 100%);
-      border: 5px solid #ffffff;
+      border: 4px solid #ffffff;
       border-radius: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 34px;
+      font-size: 26px;
       z-index: 20;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      box-shadow: 0 3px 12px rgba(0,0,0,0.25);
     }
 
     /* Botón de Girar Ruleta */
@@ -155,12 +155,12 @@ html_code = """
       background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
       color: #ffffff;
       border: 2px solid transparent;
-      padding: 15px 42px;
-      font-size: 18px;
+      padding: 12px 32px;
+      font-size: 16px;
       font-weight: 800;
       border-radius: 50px;
       cursor: pointer;
-      box-shadow: 0 10px 22px -3px rgba(2, 132, 199, 0.5);
+      box-shadow: 0 8px 18px -3px rgba(2, 132, 199, 0.5);
       transition: all 0.3s ease;
     }
 
@@ -168,25 +168,25 @@ html_code = """
       background: linear-gradient(135deg, #ffe066 0%, #f59e0b 50%, #d97706 100%);
       color: #0f172a;
       border-color: #fef08a;
-      transform: translateY(-3px) scale(1.05);
-      box-shadow: 0 0 30px rgba(245, 158, 11, 0.9), 0 12px 24px -3px rgba(217, 119, 6, 0.6);
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 0 25px rgba(245, 158, 11, 0.9), 0 10px 20px -3px rgba(217, 119, 6, 0.6);
     }
 
     #juego {
-      margin-top: 20px;
+      margin-top: 15px;
       animation: fadeInUp 0.4s ease-out;
     }
 
     .pregunta-box {
       background: rgba(241, 245, 249, 0.95);
-      border: 1.5px solid rgba(203, 213, 225, 0.8);
-      border-radius: 18px;
-      padding: 18px;
-      margin-bottom: 15px;
+      border: 1px solid rgba(203, 213, 225, 0.8);
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 12px;
     }
 
     .pregunta-titulo {
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 700;
       color: #0f172a;
       line-height: 1.4;
@@ -195,18 +195,18 @@ html_code = """
     .opciones {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
 
     .opciones button {
       background: #ffffff;
       color: #1e293b;
-      border: 2px solid #cbd5e1;
-      padding: 12px 18px;
-      font-size: 14px;
+      border: 1.5px solid #cbd5e1;
+      padding: 10px 14px;
+      font-size: 13px;
       font-weight: 600;
       font-family: inherit;
-      border-radius: 14px;
+      border-radius: 12px;
       cursor: pointer;
       text-align: left;
       transition: all 0.2s ease;
@@ -216,7 +216,7 @@ html_code = """
       background: #0284c7;
       color: #ffffff;
       border-color: #0284c7;
-      transform: translateX(4px);
+      transform: translateX(3px);
     }
 
     /* Pantallas completas opacas */
@@ -240,33 +240,33 @@ html_code = """
 
     .overlay-card {
       background: #ffffff !important;
-      border-radius: 28px;
-      padding: 32px;
+      border-radius: 24px;
+      padding: 28px;
       text-align: center;
-      max-width: 360px;
+      max-width: 320px;
       width: 90%;
-      box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
     }
 
-    .overlay-emoji { font-size: 70px; margin-bottom: 10px; }
+    .overlay-emoji { font-size: 60px; margin-bottom: 8px; }
 
     .overlay-titulo {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 800;
       color: #0f172a;
-      margin-bottom: 18px;
+      margin-bottom: 15px;
     }
 
     .btn-continuar {
       background: #0f172a;
       color: #ffffff;
       border: none;
-      padding: 14px 32px;
-      font-size: 15px;
+      padding: 12px 28px;
+      font-size: 14px;
       font-weight: 800;
       border-radius: 50px;
       cursor: pointer;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
     .oculto { display: none !important; }
@@ -282,7 +282,7 @@ html_code = """
     <div class="ruleta-container">
       <div class="ruleta-outer-ring">
         <div class="flecha"></div>
-        <canvas id="canvasRuleta" width="430" height="430"></canvas>
+        <canvas id="canvasRuleta" width="310" height="310"></canvas>
         <div class="ruleta-centro">⭐</div>
       </div>
     </div>
@@ -397,7 +397,7 @@ html_code = """
         ctx.moveTo(centroX, centroY);
         ctx.arc(centroX, centroY, radio, anguloInicio, anguloFin);
         ctx.fill();
-        ctx.lineWidth = 4;
+        ctx.lineWidth = 3;
         ctx.strokeStyle = "#ffffff";
         ctx.stroke();
 
@@ -406,9 +406,8 @@ html_code = """
         ctx.rotate(anguloInicio + anguloArc / 2);
         ctx.textAlign = "right";
         ctx.fillStyle = "#ffffff";
-        /* Texto nítido y amplio a 13px */
-        ctx.font = "800 13px Poppins, sans-serif";
-        ctx.fillText(sectores[i].titulo, radio - 20, 4);
+        ctx.font = "800 9.5px Poppins, sans-serif";
+        ctx.fillText(sectores[i].titulo, radio - 14, 3.5);
         ctx.restore();
       }
     }
@@ -478,7 +477,7 @@ html_code = """
     function verificarRespuesta(opcion) {
       if (opcion === sectorSeleccionado.correcta) {
         reproducirSonido('acierto');
-        confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
+        confetti({ particleCount: 130, spread: 80, origin: { y: 0.6 } });
         document.getElementById('overlayAcierto').style.display = 'flex';
       } else {
         reproducirSonido('error');
@@ -497,4 +496,4 @@ html_code = """
 </html>
 """
 
-st.components.v1.html(html_code, height=980, scrolling=True)
+st.components.v1.html(html_code, height=820, scrolling=True)
