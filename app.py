@@ -69,20 +69,20 @@ html_code = """
       overflow: hidden;
     }
 
-    /* Tarjeta Principal Clara */
+    /* Tarjeta Principal Más Ancha */
     .card {
       background: rgba(255, 255, 255, 0.95);
       border: 2px solid rgba(255, 255, 255, 0.9);
       border-radius: 28px;
-      padding: 20px 18px;
-      max-width: 440px;
+      padding: 20px 22px;
+      max-width: 480px;
       width: 100%;
       text-align: center;
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
     }
 
     h1 {
-      font-size: 20px;
+      font-size: 22px;
       font-weight: 800;
       color: #0f172a;
       background: linear-gradient(135deg, #0284c7 0%, #e11d48 50%, #d97706 100%);
@@ -91,10 +91,11 @@ html_code = """
       margin-bottom: 12px;
     }
 
+    /* Ruleta Ampliada a 340px */
     .ruleta-container {
       position: relative;
-      width: 250px;
-      height: 250px;
+      width: 340px;
+      height: 340px;
       margin: 5px auto 15px;
       display: flex;
       justify-content: center;
@@ -115,47 +116,47 @@ html_code = """
 
     .flecha {
       position: absolute;
-      top: -14px;
+      top: -16px;
       left: 50%;
       transform: translateX(-50%);
       width: 0;
       height: 0;
-      border-left: 15px solid transparent;
-      border-right: 15px solid transparent;
-      border-top: 28px solid #ff0033;
+      border-left: 18px solid transparent;
+      border-right: 18px solid transparent;
+      border-top: 32px solid #ff0033;
       z-index: 30;
       filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));
     }
 
     #canvasRuleta {
       border-radius: 50%;
-      border: 4px solid #ffffff;
+      border: 5px solid #ffffff;
       box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
       transition: transform 4s cubic-bezier(0.15, 0.85, 0.15, 1);
     }
 
     .ruleta-centro {
       position: absolute;
-      width: 48px;
-      height: 48px;
+      width: 60px;
+      height: 60px;
       background: radial-gradient(circle, #fef08a 0%, #f59e0b 100%);
-      border: 3px solid #ffffff;
+      border: 4px solid #ffffff;
       border-radius: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 20px;
+      font-size: 26px;
       z-index: 20;
       box-shadow: 0 3px 12px rgba(0,0,0,0.25);
     }
 
-    /* Botón de Girar Ruleta con efecto Dorado al Tocarlo */
+    /* Botón de Girar Ruleta */
     .btn-girar {
       background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
       color: #ffffff;
       border: 2px solid transparent;
-      padding: 12px 30px;
-      font-size: 15px;
+      padding: 12px 32px;
+      font-size: 16px;
       font-weight: 800;
       border-radius: 50px;
       cursor: pointer;
@@ -218,7 +219,7 @@ html_code = """
       transform: translateX(3px);
     }
 
-    /* Pantallas completas opacas (Sin transparencia) */
+    /* Pantallas completas opacas */
     .overlay {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
@@ -229,12 +230,10 @@ html_code = """
       z-index: 9999;
     }
 
-    /* Verde esmeralda potente y sólido */
     .overlay.acierto { 
       background: #00c853 !important; 
     }
 
-    /* Rojo intenso potente y sólido */
     .overlay.error { 
       background: #d50000 !important; 
     }
@@ -283,7 +282,7 @@ html_code = """
     <div class="ruleta-container">
       <div class="ruleta-outer-ring">
         <div class="flecha"></div>
-        <canvas id="canvasRuleta" width="230" height="230"></canvas>
+        <canvas id="canvasRuleta" width="310" height="310"></canvas>
         <div class="ruleta-centro">⭐</div>
       </div>
     </div>
@@ -398,7 +397,7 @@ html_code = """
         ctx.moveTo(centroX, centroY);
         ctx.arc(centroX, centroY, radio, anguloInicio, anguloFin);
         ctx.fill();
-        ctx.lineWidth = 2.5;
+        ctx.lineWidth = 3;
         ctx.strokeStyle = "#ffffff";
         ctx.stroke();
 
@@ -407,9 +406,9 @@ html_code = """
         ctx.rotate(anguloInicio + anguloArc / 2);
         ctx.textAlign = "right";
         ctx.fillStyle = "#ffffff";
-        /* Letra ajustada a 6.8px de tamaño para que quepan holgadamente textos más largos */
-        ctx.font = "800 6.8px Poppins, sans-serif";
-        ctx.fillText(sectores[i].titulo, radio - 8, 2.5);
+        /* Al ser más grande la ruleta, la letra se ajusta a 9.5px para ser muy legible */
+        ctx.font = "800 9.5px Poppins, sans-serif";
+        ctx.fillText(sectores[i].titulo, radio - 14, 3.5);
         ctx.restore();
       }
     }
@@ -498,4 +497,4 @@ html_code = """
 </html>
 """
 
-st.components.v1.html(html_code, height=750, scrolling=True)
+st.components.v1.html(html_code, height=820, scrolling=True)
