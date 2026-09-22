@@ -482,21 +482,21 @@ html_code = """
           osc.stop(audioCtx.currentTime + idx * 0.09 + 0.35);
         });
       } else {
-        // Opción 3: Dos notas graves tristes/desafinadas
-        const notasError = [185, 138];
+        // Sonido de error potenciar (Sawtooth + mayor ganancia + 2 tonos bien marcados)
+        const notasError = [220, 155]; // Tono medio-grave y luego grave desfase
         notasError.forEach((freq, idx) => {
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
-          osc.type = 'triangle';
+          osc.type = 'sawtooth'; // Onda más crujiente y audible
           osc.frequency.value = freq;
           
-          gain.gain.setValueAtTime(0.35, audioCtx.currentTime + idx * 0.22);
-          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.22 + 0.28);
+          gain.gain.setValueAtTime(0.55, audioCtx.currentTime + idx * 0.28);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.28 + 0.38);
           
           osc.connect(gain);
           gain.connect(audioCtx.destination);
-          osc.start(audioCtx.currentTime + idx * 0.22);
-          osc.stop(audioCtx.currentTime + idx * 0.22 + 0.28);
+          osc.start(audioCtx.currentTime + idx * 0.28);
+          osc.stop(audioCtx.currentTime + idx * 0.28 + 0.38);
         });
       }
     }
