@@ -17,7 +17,6 @@ try:
     img_base64 = get_base64_image("fondo.png")
     bg_style = f"background-image: url('data:image/png;base64,{img_base64}');"
 except Exception:
-    # Si aún no has subido fondo.png, usa un degradado festivo por defecto
     bg_style = "background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);"
 
 st.markdown(f"""
@@ -65,28 +64,29 @@ html_code = """
       justify-content: center;
       align-items: center;
       padding: 15px;
-      color: #f8fafc;
+      color: #1e293b;
       overflow-x: hidden;
     }
 
-    /* Tarjeta Principal Flotante */
+    /* Tarjeta Principal Clara (Glassmorphism Blanco) */
     .card {
-      background: rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 2px solid rgba(255, 255, 255, 0.4);
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 2px solid rgba(255, 255, 255, 0.9);
       border-radius: 32px;
       padding: 25px 22px;
       max-width: 500px;
       width: 100%;
       text-align: center;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.5);
     }
 
     h1 {
       font-size: 22px;
       font-weight: 800;
-      background: linear-gradient(135deg, #38bdf8 0%, #f43f5e 50%, #fbbf24 100%);
+      color: #0f172a;
+      background: linear-gradient(135deg, #0284c7 0%, #e11d48 50%, #d97706 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       margin-bottom: 18px;
@@ -108,7 +108,7 @@ html_code = """
       height: 100%;
       border-radius: 50%;
       background: linear-gradient(145deg, #f59e0b, #b45309, #f59e0b);
-      box-shadow: 0 0 35px rgba(245, 158, 11, 0.8), inset 0 2px 6px rgba(255,255,255,0.8);
+      box-shadow: 0 0 25px rgba(245, 158, 11, 0.6), inset 0 2px 6px rgba(255,255,255,0.8);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -123,15 +123,15 @@ html_code = """
       height: 0;
       border-left: 18px solid transparent;
       border-right: 18px solid transparent;
-      border-top: 32px solid #f43f5e;
+      border-top: 32px solid #e11d48;
       z-index: 30;
-      filter: drop-shadow(0 6px 10px rgba(0,0,0,0.8));
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
     }
 
     #canvasRuleta {
       border-radius: 50%;
       border: 5px solid #ffffff;
-      box-shadow: inset 0 0 15px rgba(0,0,0,0.6);
+      box-shadow: inset 0 0 15px rgba(0,0,0,0.3);
       transition: transform 4s cubic-bezier(0.15, 0.85, 0.15, 1);
     }
 
@@ -147,25 +147,25 @@ html_code = """
       align-items: center;
       font-size: 24px;
       z-index: 20;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.25);
     }
 
     .btn-girar {
-      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-      color: #0f172a;
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff;
       border: none;
       padding: 15px 36px;
       font-size: 16px;
       font-weight: 800;
       border-radius: 50px;
       cursor: pointer;
-      box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.7);
+      box-shadow: 0 8px 20px -3px rgba(2, 132, 199, 0.5);
       transition: all 0.25s ease;
     }
 
     .btn-girar:hover {
       transform: translateY(-3px) scale(1.04);
-      box-shadow: 0 15px 35px -5px rgba(245, 158, 11, 0.9);
+      box-shadow: 0 12px 25px -3px rgba(2, 132, 199, 0.7);
     }
 
     #juego {
@@ -174,17 +174,18 @@ html_code = """
     }
 
     .pregunta-box {
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(241, 245, 249, 0.95);
+      border: 1px solid rgba(203, 213, 225, 0.8);
       border-radius: 20px;
       padding: 18px;
       margin-bottom: 18px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
     }
 
     .pregunta-titulo {
       font-size: 15px;
-      font-weight: 600;
-      color: #f8fafc;
+      font-weight: 700;
+      color: #0f172a;
       line-height: 1.5;
     }
 
@@ -195,9 +196,9 @@ html_code = """
     }
 
     .opciones button {
-      background: rgba(30, 41, 59, 0.9);
-      color: #e2e8f0;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: #ffffff;
+      color: #1e293b;
+      border: 1.5px solid #cbd5e1;
       padding: 14px 18px;
       font-size: 14px;
       font-weight: 600;
@@ -206,12 +207,13 @@ html_code = """
       cursor: pointer;
       text-align: left;
       transition: all 0.25s ease;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.03);
     }
 
     .opciones button:hover {
       background: #0284c7;
       color: #ffffff;
-      border-color: #38bdf8;
+      border-color: #0284c7;
       transform: translateX(5px);
     }
 
@@ -227,18 +229,17 @@ html_code = """
       -webkit-backdrop-filter: blur(14px);
     }
 
-    .overlay.acierto { background: rgba(6, 78, 59, 0.92); }
-    .overlay.error { background: rgba(136, 19, 55, 0.92); }
+    .overlay.acierto { background: rgba(16, 185, 129, 0.88); }
+    .overlay.error { background: rgba(239, 68, 68, 0.88); }
 
     .overlay-card {
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(255,255,255,0.25);
+      background: #ffffff;
       border-radius: 28px;
       padding: 35px;
       text-align: center;
       max-width: 380px;
       width: 90%;
-      box-shadow: 0 30px 60px rgba(0,0,0,0.7);
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
     }
 
     .overlay-emoji { font-size: 70px; margin-bottom: 10px; }
@@ -246,13 +247,13 @@ html_code = """
     .overlay-titulo {
       font-size: 24px;
       font-weight: 800;
-      color: #ffffff;
+      color: #0f172a;
       margin-bottom: 18px;
     }
 
     .btn-continuar {
-      background: #ffffff;
-      color: #0f172a;
+      background: #0f172a;
+      color: #ffffff;
       border: none;
       padding: 13px 30px;
       font-size: 15px;
