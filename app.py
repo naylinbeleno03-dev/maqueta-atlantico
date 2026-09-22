@@ -304,7 +304,7 @@ html_code = """
 
   <div id="overlayError" class="overlay error">
     <div class="overlay-card">
-      <div class="overlay-emoji">❌</div>
+      <div class="overlay-emoji">😓❌</div>
       <div class="overlay-titulo">¡INCORRECTO!<br>Inténtalo de Nuevo</div>
       <button class="btn-continuar" onclick="cerrarOverlay('overlayError')">Reintentar </button>
     </div>
