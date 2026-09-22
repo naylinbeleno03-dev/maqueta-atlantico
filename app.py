@@ -2,7 +2,7 @@ import streamlit as st
 import base64
 
 st.set_page_config(
-    page_title="Ruleta Área Metropolitana del Atlántico", 
+    page_title="Ruleta Zona Metropolitana del Atlántico", 
     page_icon="🎡", 
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -268,7 +268,7 @@ html_code = """
 <body>
 
   <div class="card">
-    <h1>🎡 Área Metropolitana del Atlántico</h1>
+    <h1>🎡Zona Metropolitana del Atlántico</h1>
     
     <div class="ruleta-container">
       <div class="ruleta-outer-ring">
@@ -298,15 +298,15 @@ html_code = """
     <div class="overlay-card">
       <div class="overlay-emoji">🥳</div>
       <div class="overlay-titulo">¡EXCELENTE!<br>Respuesta Correcta</div>
-      <button class="btn-continuar" onclick="cerrarOverlay('overlayAcierto')">Continuar ➡️</button>
+      <button class="btn-continuar" onclick="cerrarOverlay('overlayAcierto')">Continuar</button>
     </div>
   </div>
 
   <div id="overlayError" class="overlay error">
     <div class="overlay-card">
-      <div class="overlay-emoji">❌</div>
+      <div class="overlay-emoji">😓❌</div>
       <div class="overlay-titulo">¡INCORRECTO!<br>Inténtalo de Nuevo</div>
-      <button class="btn-continuar" onclick="cerrarOverlay('overlayError')">Reintentar 🔄</button>
+      <button class="btn-continuar" onclick="cerrarOverlay('overlayError')">Reintentar</button>
     </div>
   </div>
 
@@ -315,14 +315,14 @@ html_code = """
       {
         titulo: "2do MÁS POBLADO",
         color: "#ff0033",
-        pregunta: "1. ¿Cuál es el segundo municipio más poblado (153.223 hab)?",
+        pregunta: "1. ¿Cuál es el segundo municipio más poblado?",
         A: "Malambo", B: "Galapa", C: "Puerto Colombia", D: "Barranquilla",
         correcta: "A"
       },
       {
         titulo: "MAYOR POBLACIÓN",
         color: "#0066ff",
-        pregunta: "2. ¿Qué municipio concentra la mayor población (1.275.854 hab)?",
+        pregunta: "2. ¿Qué municipio concentra la mayor población?",
         A: "Galapa", B: "Barranquilla", C: "Malambo", D: "Puerto Colombia",
         correcta: "B"
       },
@@ -346,8 +346,8 @@ html_code = """
       {
         titulo: "% BARRANQUILLA",
         color: "#8800ff",
-        pregunta: "5. ¿Qué porcentaje de la población total del Atlántico representa Barranquilla?",
-        A: "50,0%", B: "44,2%", C: "35,8%", D: "60,1%",
+        pregunta: "5. ¿Qué porcentaje de la población total representa Barranquilla?",
+        A: "71,3%", B: "81,5%", C: "35,8%", D: "00,1%",
         correcta: "B"
       },
       {
