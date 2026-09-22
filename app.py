@@ -33,17 +33,15 @@ st.markdown(f"""
         background-attachment: fixed !important;
     }}
 
-    /* Ajustes para eliminar espacios en blanco en móviles */
     .block-container {{
         padding: 0rem !important;
         max-width: 100% !important;
     }}
     
-    /* Forzar al iframe a ocupar el alto útil completo */
     iframe {{
         border: none !important;
         width: 100% !important;
-        height: 100vh !important;
+        min-height: 100vh !important;
     }}
     </style>
 """, unsafe_allow_html=True)
@@ -53,40 +51,42 @@ html_code = """
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-      font-family: 'Poppins', sans-serif;
+    html, body {
+      width: 100%;
       min-height: 100vh;
+      font-family: 'Poppins', sans-serif;
       background: transparent;
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
       padding: 10px;
       color: #1e293b;
       overflow-x: hidden;
       overflow-y: auto;
     }
 
+    /* Tarjeta Adaptable para Celular y Portátil */
     .card {
-      background: rgba(255, 255, 255, 0.95);
+      background: rgba(255, 255, 255, 0.94);
       border: 2px solid rgba(255, 255, 255, 0.9);
-      border-radius: 28px;
-      padding: 20px 18px;
-      max-width: 480px;
+      border-radius: 24px;
+      padding: 20px;
+      max-width: 500px;
       width: 100%;
       text-align: center;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-      margin: auto;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      margin: 10px auto 30px;
     }
 
     h1 {
-      font-size: clamp(18px, 5vw, 22px);
+      font-size: clamp(18px, 4vw, 22px);
       font-weight: 800;
       color: #0f172a;
       background: linear-gradient(135deg, #0284c7 0%, #e11d48 50%, #d97706 100%);
@@ -97,9 +97,9 @@ html_code = """
 
     .ruleta-container {
       position: relative;
-      width: min(320px, 80vw);
-      height: min(320px, 80vw);
-      margin: 5px auto 15px;
+      width: min(300px, 75vw);
+      height: min(300px, 75vw);
+      margin: 10px auto 15px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -111,7 +111,7 @@ html_code = """
       height: 100%;
       border-radius: 50%;
       background: linear-gradient(145deg, #fbbf24, #d97706, #fbbf24);
-      box-shadow: 0 0 25px rgba(245, 158, 11, 0.8), inset 0 2px 6px rgba(255,255,255,0.8);
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.7), inset 0 2px 6px rgba(255,255,255,0.8);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -119,14 +119,14 @@ html_code = """
 
     .flecha {
       position: absolute;
-      top: -16px;
+      top: -14px;
       left: 50%;
       transform: translateX(-50%);
       width: 0;
       height: 0;
-      border-left: 18px solid transparent;
-      border-right: 18px solid transparent;
-      border-top: 32px solid #ff0033;
+      border-left: 16px solid transparent;
+      border-right: 16px solid transparent;
+      border-top: 28px solid #ff0033;
       z-index: 30;
       filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));
       transition: transform 0.05s ease-out;
@@ -134,7 +134,7 @@ html_code = """
 
     #canvasRuleta {
       border-radius: 50%;
-      border: 5px solid #ffffff;
+      border: 4px solid #ffffff;
       box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
       width: 90% !important;
       height: 90% !important;
@@ -150,7 +150,7 @@ html_code = """
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 20px;
+      font-size: clamp(16px, 4vw, 22px);
       z-index: 20;
       box-shadow: 0 3px 12px rgba(0,0,0,0.25);
     }
@@ -159,15 +159,16 @@ html_code = """
       background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
       color: #ffffff;
       border: 2px solid transparent;
-      padding: 12px 32px;
-      font-size: 16px;
+      padding: 12px 28px;
+      font-size: clamp(14px, 3.5vw, 16px);
       font-weight: 800;
       border-radius: 50px;
       cursor: pointer;
       box-shadow: 0 8px 18px -3px rgba(2, 132, 199, 0.5);
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
       width: 100%;
-      max-width: 280px;
+      max-width: 260px;
+      margin: 5px auto;
     }
 
     .btn-girar:hover, .btn-girar:active {
@@ -175,24 +176,24 @@ html_code = """
       color: #0f172a;
       border-color: #fef08a;
       transform: translateY(-2px) scale(1.02);
-      box-shadow: 0 0 25px rgba(245, 158, 11, 0.9), 0 10px 20px -3px rgba(217, 119, 6, 0.6);
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.8);
     }
 
     #juego {
       margin-top: 15px;
-      animation: fadeInUp 0.4s ease-out;
+      animation: fadeInUp 0.3s ease-out;
     }
 
     .pregunta-box {
       background: rgba(241, 245, 249, 0.95);
       border: 1px solid rgba(203, 213, 225, 0.8);
-      border-radius: 16px;
-      padding: 14px;
+      border-radius: 14px;
+      padding: 12px;
       margin-bottom: 12px;
     }
 
     .pregunta-titulo {
-      font-size: 14px;
+      font-size: clamp(13px, 3.2vw, 15px);
       font-weight: 700;
       color: #0f172a;
       line-height: 1.4;
@@ -208,15 +209,15 @@ html_code = """
       background: #ffffff;
       color: #1e293b;
       border: 1.5px solid #cbd5e1;
-      padding: 12px 14px;
-      font-size: 13px;
+      padding: 10px 12px;
+      font-size: clamp(12px, 3vw, 13px);
       font-weight: 600;
       font-family: inherit;
       border-radius: 12px;
       cursor: pointer;
       text-align: left;
       transition: all 0.2s ease;
-      min-height: 44px;
+      min-height: 42px;
     }
 
     .opciones button:hover, .opciones button:active {
@@ -225,6 +226,7 @@ html_code = """
       border-color: #0284c7;
     }
 
+    /* Modal / Overlay full-screen */
     .overlay {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
@@ -233,6 +235,7 @@ html_code = """
       justify-content: center;
       align-items: center;
       z-index: 9999;
+      padding: 20px;
     }
 
     .overlay.acierto { background: rgba(0, 200, 83, 0.95) !important; }
@@ -240,18 +243,18 @@ html_code = """
 
     .overlay-card {
       background: #ffffff !important;
-      border-radius: 24px;
-      padding: 28px;
+      border-radius: 20px;
+      padding: 24px;
       text-align: center;
       max-width: 320px;
       width: 90%;
       box-shadow: 0 20px 40px rgba(0,0,0,0.4);
     }
 
-    .overlay-emoji { font-size: 60px; margin-bottom: 8px; }
+    .overlay-emoji { font-size: 50px; margin-bottom: 8px; }
 
     .overlay-titulo {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 800;
       color: #0f172a;
       margin-bottom: 15px;
@@ -261,7 +264,7 @@ html_code = """
       background: #0f172a;
       color: #ffffff;
       border: none;
-      padding: 12px 28px;
+      padding: 10px 24px;
       font-size: 14px;
       font-weight: 800;
       border-radius: 50px;
@@ -418,7 +421,7 @@ html_code = """
     let anguloActualRad = 0;
     let girando = false;
 
-    // Motor de audio
+    // Motor de Audio
     let audioCtx = null;
 
     function initAudio() {
@@ -573,6 +576,9 @@ html_code = """
       document.getElementById('opcionB').textContent = `B) ${sectorSeleccionado.B}`;
       document.getElementById('opcionC').textContent = `C) ${sectorSeleccionado.C}`;
       document.getElementById('opcionD').textContent = `D) ${sectorSeleccionado.D}`;
+      
+      // Auto-scroll suave en móviles hacia la pregunta
+      document.getElementById('juego').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
     function verificarRespuesta(opcion) {
@@ -597,5 +603,5 @@ html_code = """
 </html>
 """
 
-# Se cambia scrolling a False y se le da alto dinámico de pantalla completa
-st.components.v1.html(html_code, height=750, scrolling=False)
+# Se habilita scrolling=True para garantizar visibilidad total en móviles
+st.components.v1.html(html_code, height=880, scrolling=True)
