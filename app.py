@@ -409,7 +409,7 @@ html_code = """
     let anguloActualRad = 0;
     let girando = false;
 
-    // Inicialización del motor de audio sintético
+    // Motor de audio
     let audioCtx = null;
 
     function initAudio() {
@@ -421,7 +421,6 @@ html_code = """
       }
     }
 
-    // Sonido de "Tic" al girar
     function tocarClic() {
       if (!audioCtx) return;
 
@@ -448,7 +447,6 @@ html_code = """
       }, 40);
     }
 
-    // Campana final al detenerse
     function tocarCampanaFinal() {
       if (!audioCtx) return;
       const osc = audioCtx.createOscillator();
@@ -466,12 +464,10 @@ html_code = """
       osc.stop(audioCtx.currentTime + 0.5);
     }
 
-    // Sonidos de Acierto / Error
     function reproducirSonidoResultados(tipo) {
       initAudio();
       
       if (tipo === 'acierto') {
-        // Fanfarria alegre de victoria (Do - Mi - Sol - Do)
         const notas = [523.25, 659.25, 783.99, 1046.50];
         notas.forEach((freq, idx) => {
           const osc = audioCtx.createOscillator();
@@ -486,25 +482,21 @@ html_code = """
           osc.stop(audioCtx.currentTime + idx * 0.09 + 0.35);
         });
       } else {
-        // Sonido de ERROR tipo 'Wrong Buzzer' de Concurso TV ("BUZZ-BUZZ")
-        const tiempos = [0, 0.22];
-        const frecs = [160, 130];
-
-        tiempos.forEach((t, index) => {
+        // Opción 3: Dos notas graves tristes/desafinadas
+        const notasError = [185, 138];
+        notasError.forEach((freq, idx) => {
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
-
-          osc.type = 'sawtooth'; // Onda tipo diente de sierra para efecto aspero de buzzer
-          osc.frequency.setValueAtTime(frecs[index], audioCtx.currentTime + t);
-
-          gain.gain.setValueAtTime(0.35, audioCtx.currentTime + t);
-          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + t + 0.18);
-
+          osc.type = 'triangle';
+          osc.frequency.value = freq;
+          
+          gain.gain.setValueAtTime(0.35, audioCtx.currentTime + idx * 0.22);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.22 + 0.28);
+          
           osc.connect(gain);
           gain.connect(audioCtx.destination);
-
-          osc.start(audioCtx.currentTime + t);
-          osc.stop(audioCtx.currentTime + t + 0.18);
+          osc.start(audioCtx.currentTime + idx * 0.22);
+          osc.stop(audioCtx.currentTime + idx * 0.22 + 0.28);
         });
       }
     }
