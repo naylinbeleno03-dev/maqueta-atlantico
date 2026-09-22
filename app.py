@@ -71,9 +71,7 @@ html_code = """
 
     /* Tarjeta Principal Clara */
     .card {
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      background: rgba(255, 255, 255, 0.95);
       border: 2px solid rgba(255, 255, 255, 0.9);
       border-radius: 28px;
       padding: 20px 18px;
@@ -220,6 +218,7 @@ html_code = """
       transform: translateX(3px);
     }
 
+    /* Pantallas completas opacas (Sin transparencia) */
     .overlay {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
@@ -228,21 +227,26 @@ html_code = """
       justify-content: center;
       align-items: center;
       z-index: 9999;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
     }
 
-    .overlay.acierto { background: rgba(16, 185, 129, 0.88); }
-    .overlay.error { background: rgba(239, 68, 68, 0.88); }
+    /* Verde esmeralda potente y sólido */
+    .overlay.acierto { 
+      background: #00c853 !important; 
+    }
+
+    /* Rojo intenso potente y sólido */
+    .overlay.error { 
+      background: #d50000 !important; 
+    }
 
     .overlay-card {
-      background: #ffffff;
+      background: #ffffff !important;
       border-radius: 24px;
       padding: 28px;
       text-align: center;
       max-width: 320px;
       width: 90%;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
     }
 
     .overlay-emoji { font-size: 60px; margin-bottom: 8px; }
@@ -258,11 +262,12 @@ html_code = """
       background: #0f172a;
       color: #ffffff;
       border: none;
-      padding: 10px 24px;
+      padding: 12px 28px;
       font-size: 14px;
       font-weight: 800;
       border-radius: 50px;
       cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
     .oculto { display: none !important; }
@@ -316,25 +321,24 @@ html_code = """
   </div>
 
   <script>
-    /* Colores ultra vivos y potentes para la ruleta */
     const sectores = [
       {
         titulo: "2do MÁS POBLADO",
-        color: "#ff0033", /* Rojo Neón */
+        color: "#ff0033",
         pregunta: "1. ¿Cuál es el segundo municipio más poblado (153.223 hab)?",
         A: "Malambo", B: "Galapa", C: "Puerto Colombia", D: "Barranquilla",
         correcta: "A"
       },
       {
         titulo: "MAYOR POBLACIÓN",
-        color: "#0066ff", /* Azul Eléctrico */
+        color: "#0066ff",
         pregunta: "2. ¿Qué municipio concentra la mayor población (1.275.854 hab)?",
         A: "Galapa", B: "Barranquilla", C: "Malambo", D: "Puerto Colombia",
         correcta: "B"
       },
       {
         titulo: "ORDENAR POBLACIÓN",
-        color: "#00cc44", /* Verde Esmeralda Potente */
+        color: "#00cc44",
         pregunta: "3. Ordena los municipios de mayor a menor población:",
         A: "Barranquilla > Malambo > Galapa > Puerto Colombia",
         B: "Barranquilla > Malambo > Puerto Colombia > Galapa",
@@ -344,28 +348,28 @@ html_code = """
       },
       {
         titulo: "POBLACIÓN TOTAL",
-        color: "#ff8800", /* Naranja Brillante */
+        color: "#ff8800",
         pregunta: "4. ¿Cuál es la población total de los 4 municipios combinados?",
         A: "1.275.854 habitantes", B: "1.564.805 habitantes", C: "1.850.000 habitantes", D: "2.000.000 habitantes",
         correcta: "B"
       },
       {
         titulo: "% BARRANQUILLA",
-        color: "#8800ff", /* Violeta Intenso */
+        color: "#8800ff",
         pregunta: "5. ¿Qué porcentaje de la población total del Atlántico representa Barranquilla?",
         A: "50,0%", B: "44,2%", C: "35,8%", D: "60,1%",
         correcta: "B"
       },
       {
         titulo: "RANGO POBLACIÓN",
-        color: "#ff0077", /* Magenta Vivo */
+        color: "#ff0077",
         pregunta: "6. ¿Cuál es el rango poblacional (Barranquilla - Puerto Colombia)?",
         A: "1.210.168 habitantes", B: "1.100.000 habitantes", C: "950.000 habitantes", D: "1.275.854 habitantes",
         correcta: "A"
       },
       {
         titulo: "ESCALA MAQUETA",
-        color: "#00bbdd", /* Cian Potente */
+        color: "#00bbdd",
         pregunta: "7. ¿Qué representa la escala 1 cm = 50.000 habitantes?",
         A: "Que la maqueta mide 50 cm",
         B: "Que 1 cm de barra física equivale a 50.000 habitantes",
