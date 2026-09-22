@@ -304,7 +304,7 @@ html_code = """
 
   <div id="overlayError" class="overlay error">
     <div class="overlay-card">
-      <div class="overlay-emoji">😢</div>
+      <div class="overlay-emoji">❌</div>
       <div class="overlay-titulo">¡INCORRECTO!<br>Inténtalo de Nuevo</div>
       <button class="btn-continuar" onclick="cerrarOverlay('overlayError')">Reintentar 🔄</button>
     </div>
@@ -409,7 +409,7 @@ html_code = """
     let anguloActualRad = 0;
     let girando = false;
 
-    // Inicialización del motor de audio sintético (Web Audio API)
+    // Inicialización del motor de audio sintético
     let audioCtx = null;
 
     function initAudio() {
@@ -421,7 +421,7 @@ html_code = """
       }
     }
 
-    // Clic sintético de ruleta física realista
+    // Sonido de "Tic" al girar
     function tocarClic() {
       if (!audioCtx) return;
 
@@ -441,7 +441,6 @@ html_code = """
       osc.start();
       osc.stop(audioCtx.currentTime + 0.03);
 
-      // Animación en la lengüeta roja
       const flecha = document.getElementById('flechaIndicador');
       flecha.style.transform = 'translateX(-50%) scale(1.25)';
       setTimeout(() => {
@@ -449,14 +448,14 @@ html_code = """
       }, 40);
     }
 
-    // Sonido de parada final (Campana)
+    // Campana final al detenerse
     function tocarCampanaFinal() {
       if (!audioCtx) return;
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
 
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(880, audioCtx.currentTime); // Nota A5
+      osc.frequency.setValueAtTime(880, audioCtx.currentTime);
       gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
 
@@ -467,39 +466,52 @@ html_code = """
       osc.stop(audioCtx.currentTime + 0.5);
     }
 
+    // Sonidos de Acierto / Error
     function reproducirSonidoResultados(tipo) {
       initAudio();
+      
       if (tipo === 'acierto') {
+        // Fanfarria alegre de victoria (Do - Mi - Sol - Do)
         const notas = [523.25, 659.25, 783.99, 1046.50];
         notas.forEach((freq, idx) => {
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
+          osc.type = 'triangle';
           osc.frequency.value = freq;
-          gain.gain.setValueAtTime(0.2, audioCtx.currentTime + idx * 0.08);
-          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.08 + 0.3);
+          gain.gain.setValueAtTime(0.3, audioCtx.currentTime + idx * 0.09);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.09 + 0.35);
           osc.connect(gain);
           gain.connect(audioCtx.destination);
-          osc.start(audioCtx.currentTime + idx * 0.08);
-          osc.stop(audioCtx.currentTime + idx * 0.08 + 0.3);
+          osc.start(audioCtx.currentTime + idx * 0.09);
+          osc.stop(audioCtx.currentTime + idx * 0.09 + 0.35);
         });
       } else {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(140, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.35);
-        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.35);
+        // Sonido de ERROR tipo 'Wrong Buzzer' de Concurso TV ("BUZZ-BUZZ")
+        const tiempos = [0, 0.22];
+        const frecs = [160, 130];
+
+        tiempos.forEach((t, index) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+
+          osc.type = 'sawtooth'; // Onda tipo diente de sierra para efecto aspero de buzzer
+          osc.frequency.setValueAtTime(frecs[index], audioCtx.currentTime + t);
+
+          gain.gain.setValueAtTime(0.35, audioCtx.currentTime + t);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + t + 0.18);
+
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          osc.start(audioCtx.currentTime + t);
+          osc.stop(audioCtx.currentTime + t + 0.18);
+        });
       }
     }
 
     function girarRuleta() {
       if (girando) return;
-      initAudio(); // Activa el audio mediante el click del usuario
+      initAudio();
       
       girando = true;
       document.getElementById('juego').classList.add('oculto');
