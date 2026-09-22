@@ -276,8 +276,8 @@ html_code = """
 </head>
 <body>
 
-  <!-- Audio elemento para la ruleta real -->
-  <audio id="soundSpin" src="https://assets.mixkit.co/active_storage/sfx/2005/2005-preview.mp3" preload="auto"></audio>
+  <!-- Sonido de ruleta tipo carrusel/click continuo suave -->
+  <audio id="soundSpin" src="https://assets.mixkit.co/active_storage/sfx/1468/1468-preview.mp3" preload="auto"></audio>
 
   <div class="card">
     <h1>🎡 Área Metropolitana del Atlántico</h1>
@@ -453,7 +453,6 @@ html_code = """
     function girarRuleta() {
       document.getElementById('juego').classList.add('oculto');
       
-      // Reproducir audio real de ruleta
       const audioSpin = document.getElementById('soundSpin');
       if (audioSpin) {
         audioSpin.currentTime = 0;
@@ -472,6 +471,9 @@ html_code = """
       canvas.style.transform = `rotate(${anguloActual}deg)`;
 
       setTimeout(() => {
+        if (audioSpin) {
+          audioSpin.pause();
+        }
         mostrarPregunta();
       }, 4000);
     }
