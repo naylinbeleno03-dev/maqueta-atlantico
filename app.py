@@ -407,8 +407,9 @@ html_code = """
         ctx.rotate(anguloInicio + anguloArc / 2);
         ctx.textAlign = "right";
         ctx.fillStyle = "#ffffff";
-        ctx.font = "800 9px Poppins, sans-serif";
-        ctx.fillText(sectores[i].titulo, radio - 10, 3);
+        /* Letra ajustada a 6.8px de tamaño para que quepan holgadamente textos más largos */
+        ctx.font = "800 6.8px Poppins, sans-serif";
+        ctx.fillText(sectores[i].titulo, radio - 8, 2.5);
         ctx.restore();
       }
     }
