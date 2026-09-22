@@ -267,10 +267,6 @@ html_code = """
 </head>
 <body>
 
-  <!-- Audios de Clic HD y Fin de Giro -->
-  <audio id="soundClick" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" preload="auto"></audio>
-  <audio id="soundFinish" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3" preload="auto"></audio>
-
   <div class="card">
     <h1>🎡 Área Metropolitana del Atlántico</h1>
     
@@ -413,56 +409,98 @@ html_code = """
     let anguloActualRad = 0;
     let girando = false;
 
-    const audioClick = document.getElementById('soundClick');
-    const audioFinish = document.getElementById('soundFinish');
+    // Inicialización del motor de audio sintético (Web Audio API)
+    let audioCtx = null;
 
-    function tocarClic() {
-      if (audioClick) {
-        const clone = audioClick.cloneNode();
-        clone.volume = 0.6;
-        clone.play().catch(e => {});
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       }
-      
-      // Animación sutil de rebote en la flecha roja
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    // Clic sintético de ruleta física realista
+    function tocarClic() {
+      if (!audioCtx) return;
+
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.03);
+
+      gain.gain.setValueAtTime(0.8, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.03);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.03);
+
+      // Animación en la lengüeta roja
       const flecha = document.getElementById('flechaIndicador');
-      flecha.style.transform = 'translateX(-50%) scale(1.2)';
+      flecha.style.transform = 'translateX(-50%) scale(1.25)';
       setTimeout(() => {
         flecha.style.transform = 'translateX(-50%) scale(1)';
-      }, 50);
+      }, 40);
+    }
+
+    // Sonido de parada final (Campana)
+    function tocarCampanaFinal() {
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(880, audioCtx.currentTime); // Nota A5
+      gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.5);
     }
 
     function reproducirSonidoResultados(tipo) {
-      const ctxAudio = new (window.AudioContext || window.webkitAudioContext)();
+      initAudio();
       if (tipo === 'acierto') {
         const notas = [523.25, 659.25, 783.99, 1046.50];
         notas.forEach((freq, idx) => {
-          const osc = ctxAudio.createOscillator();
-          const gain = ctxAudio.createGain();
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
           osc.frequency.value = freq;
-          gain.gain.setValueAtTime(0.2, ctxAudio.currentTime + idx * 0.08);
-          gain.gain.exponentialRampToValueAtTime(0.001, ctxAudio.currentTime + idx * 0.08 + 0.3);
+          gain.gain.setValueAtTime(0.2, audioCtx.currentTime + idx * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.08 + 0.3);
           osc.connect(gain);
-          gain.connect(ctxAudio.destination);
-          osc.start(ctxAudio.currentTime + idx * 0.08);
-          osc.stop(ctxAudio.currentTime + idx * 0.08 + 0.3);
+          gain.connect(audioCtx.destination);
+          osc.start(audioCtx.currentTime + idx * 0.08);
+          osc.stop(audioCtx.currentTime + idx * 0.08 + 0.3);
         });
       } else {
-        const osc = ctxAudio.createOscillator();
-        const gain = ctxAudio.createGain();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
         osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(140, ctxAudio.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(40, ctxAudio.currentTime + 0.35);
-        gain.gain.setValueAtTime(0.3, ctxAudio.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctxAudio.currentTime + 0.35);
+        osc.frequency.setValueAtTime(140, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.35);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
         osc.connect(gain);
-        gain.connect(ctxAudio.destination);
+        gain.connect(audioCtx.destination);
         osc.start();
-        osc.stop(ctxAudio.currentTime + 0.35);
+        osc.stop(audioCtx.currentTime + 0.35);
       }
     }
 
     function girarRuleta() {
       if (girando) return;
+      initAudio(); // Activa el audio mediante el click del usuario
+      
       girando = true;
       document.getElementById('juego').classList.add('oculto');
       document.getElementById('btnGirar').disabled = true;
@@ -470,7 +508,6 @@ html_code = """
       const indiceAleatorio = Math.floor(Math.random() * numSectores);
       sectorSeleccionado = sectores[indiceAleatorio];
 
-      // Ángulo de destino preciso
       const anguloSectorDeg = 360 / numSectores;
       const anguloMetaDeg = 270 - (indiceAleatorio * anguloSectorDeg) - (anguloSectorDeg / 2);
       const girosCompletos = (Math.floor(Math.random() * 4) + 5) * 360;
@@ -490,14 +527,11 @@ html_code = """
         let progreso = transcurrido / duracionMs;
         if (progreso > 1) progreso = 1;
 
-        // Curva de desaceleración suave (easeOutCubic)
         const factorCurva = 1 - Math.pow(1 - progreso, 3);
         anguloActualRad = anguloInicialRad + deltaAnguloRad * factorCurva;
 
-        // Renderizar rotación en el canvas
         canvas.style.transform = `rotate(${anguloActualRad}rad)`;
 
-        // Detectar cada vez que la flecha cruza una división entre sectores
         const anguloNormalizado = (3 * Math.PI / 2 - anguloActualRad) % (2 * Math.PI);
         const anguloPositivo = anguloNormalizado < 0 ? anguloNormalizado + 2 * Math.PI : anguloNormalizado;
         const sectorActualIndex = Math.floor(anguloPositivo / anguloArc);
@@ -512,7 +546,7 @@ html_code = """
         } else {
           girando = false;
           document.getElementById('btnGirar').disabled = false;
-          if (audioFinish) audioFinish.play().catch(e => {});
+          tocarCampanaFinal();
           mostrarPregunta();
         }
       }
