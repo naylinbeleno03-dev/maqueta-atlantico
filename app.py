@@ -347,7 +347,7 @@ html_code = """
         titulo: "% BARRANQUILLA",
         color: "#8800ff",
         pregunta: "5. ¿Qué porcentaje de la población total representa Barranquilla?",
-        A: "71,3%", B: "81,5%", C: "35,8%", D: "00,1%",
+        A: "71,3%", B: "81,5%", C: "35,8%", D: "60,1%",
         correcta: "B"
       },
       {
