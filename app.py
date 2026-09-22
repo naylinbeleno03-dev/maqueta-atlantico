@@ -365,7 +365,7 @@ html_code = """
         B: "Barranquilla > Malambo > Puerto Colombia > Galapa",
         C: "Malambo > Barranquilla > Galapa > Puerto Colombia",
         D: "Puerto Colombia > Galapa > Malambo > Barranquilla",
-        correcta: "B"
+        correcta: "A"
       },
       {
         titulo: "POBLACIÓN TOTAL",
