@@ -339,22 +339,22 @@ html_code = """
       {
         titulo: "POBLACIÓN TOTAL",
         color: "#ff8800",
-        pregunta: "4. ¿Cuál es la población total de los 4 municipios combinados?",
-        A: "1.275.854 habitantes", B: "1.564.805 habitantes", C: "1.850.000 habitantes", D: "2.000.000 habitantes",
+        pregunta: "4. ¿Cuál es la población total de los 4 municipios combinados? (miles)",
+        A: "1.276 habitantes", B: "1.565 habitantes", C: "1.850 habitantes", D: "2.000 habitantes",
         correcta: "B"
       },
       {
         titulo: "% BARRANQUILLA",
         color: "#8800ff",
         pregunta: "5. ¿Qué porcentaje de la población total representa Barranquilla?",
-        A: "71,3%", B: "81,5%", C: "35,8%", D: "60,1%",
+        A: "71%", B: "82%", C: "36%", D: "60%",
         correcta: "B"
       },
       {
         titulo: "RANGO POBLACIÓN",
         color: "#ff0077",
-        pregunta: "6. ¿Cuál es el rango poblacional (Barranquilla - Puerto Colombia)?",
-        A: "1.210.168 habitantes", B: "1.100.000 habitantes", C: "950.000 habitantes", D: "1.275.854 habitantes",
+        pregunta: "6. ¿Cuál es el rango poblacional (Barranquilla - Puerto Colombia)? (miles)",
+        A: "1.210 habitantes", B: "1.100 habitantes", C: "950 habitantes", D: "1.275 habitantes",
         correcta: "A"
       },
       {
